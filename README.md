@@ -1,16 +1,27 @@
 # aki-xcat
 
-*aki-xcat* is the program that concate files that are plain, gzip ... etc.
+*aki-xcat* is the program that concatenate files that are plain, gzip ... etc.
 
 ## Features
 
-*aki-xcat*  concate files that are plain, gzip ... etc.
+*aki-xcat*  concatenate files that are plain, gzip ... etc.
 
-* example
+* command help
 
-command:
+```text
+aki-xcat --help
 ```
-`aki-xcat` -H
+
+```
+Usage:
+  aki-xcat [options] [<file>...]
+
+cat and zcat by rust lang.
+with no <file> or when <file> is -, read standard input.
+
+Options:
+  -H, --help     display this help and exit
+  -V, --version  display version information and exit
 ```
 
 * minimum support rustc 1.38.0
@@ -33,6 +44,42 @@ and install **.deb** into your local repository of debian package.
 
 ## Examples
 
+#### Command line example 1
+
+concatenate plain text file.
 ```
-aki-xcat text-file-1 gzip-file-2.gz gzip-file-3.gz | less
+cat fixtures/plain.txt
 ```
+result output :
+```
+abcdefg
+hijklmn
+```
+
+concatenate gzip text file.
+```
+zcat fixtures/gztext.txt.gz
+```
+result output :
+```
+ABCDEFG
+HIJKLMN
+```
+
+concatenate plain text file and gzip text file.
+```
+aki-xcat fixtures/plain.txt fixtures/gztext.txt.gz
+```
+result output :
+```
+abcdefg
+hijklmn
+ABCDEFG
+HIJKLMN
+```
+
+#### Library example
+
+See [`fn execute()`] for this library examples.
+
+[`fn execute()`]: crate::execute

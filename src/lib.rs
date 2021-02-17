@@ -1,9 +1,9 @@
 //!
-//! concate files that are plain, gzip ... etc.
+//! concatenate files that are plain, gzip ... etc.
 //!
 //! ```text
 //! Usage:
-//!   aki-xcat \[options\] \[<file>...\]
+//!   aki-xcat [options] [<file>...]
 //!
 //! cat and zcat by rust lang.
 //! with no <file> or when <file> is -, read standard input.
@@ -12,6 +12,48 @@
 //!   -H, --help     display this help and exit
 //!   -V, --version  display version information and exit
 //! ```
+//!
+//! # Examples
+//!
+//! ### Command line example 1
+//!
+//! concatenate plain text file.
+//! ```text
+//! cat fixtures/plain.txt
+//! ```
+//! result output :
+//! ```text
+//! abcdefg
+//! hijklmn
+//! ```
+//! 
+//! concatenate gzip text file.
+//! ```text
+//! zcat fixtures/gztext.txt.gz
+//! ```
+//! result output :
+//! ```text
+//! ABCDEFG
+//! HIJKLMN
+//! ```
+//! 
+//! concatenate plain text file and gzip text file.
+//! ```text
+//! aki-xcat fixtures/plain.txt fixtures/gztext.txt.gz
+//! ```
+//! result output :
+//! ```text
+//! abcdefg
+//! hijklmn
+//! ABCDEFG
+//! HIJKLMN
+//! ```
+//!
+//! ### Library example
+//!
+//! See [`fn execute()`] for this library examples.
+//!
+//! [`fn execute()`]: crate::execute
 //!
 
 #[macro_use]
@@ -42,24 +84,23 @@ const TRY_HELP_MSG: &str = "Try --help for help.";
 /// example:
 ///
 /// ```
-/// use runnel::medium::stdioe::{StreamInStdin,StreamOutStdout,StreamErrStderr};
 /// use runnel::StreamIoe;
+/// use runnel::medium::stdio::{StdErr, StdIn, StdOut};
 ///
-/// let r = libaki_xcat::execute(&StreamIoe{
-///     sin: Box::new(StreamInStdin::default()),
-///     sout: Box::new(StreamOutStdout::default()),
-///     serr: Box::new(StreamErrStderr::default()),
-/// }, "cat", &["file1", "file2.gz", "file3.gz"]);
+/// let r = libaki_xcat::execute(&StreamIoe {
+///     pin: Box::new(StdIn::default()),
+///     pout: Box::new(StdOut::default()),
+///     perr: Box::new(StdErr::default()),
+/// }, "xcat", &["file1", "file2.gz", "file3.gz"]);
 /// ```
 ///
-pub fn execute(sioe: &StreamIoe, program: &str, args: &[&str]) -> anyhow::Result<()> {
-    //
-    let conf = match conf::parse_cmdopts(program, args) {
+pub fn execute(sioe: &StreamIoe, prog_name: &str, args: &[&str]) -> anyhow::Result<()> {
+    let conf = match conf::parse_cmdopts(prog_name, args) {
         Ok(conf) => conf,
         Err(errs) => {
             for err in errs.iter().take(1) {
                 if err.is_help() || err.is_version() {
-                    let _r = sioe.sout.lock().write_fmt(format_args!("{}\n", err));
+                    let _r = sioe.pout.lock().write_fmt(format_args!("{}\n", err));
                     return Ok(());
                 }
             }

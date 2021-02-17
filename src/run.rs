@@ -15,7 +15,7 @@ pub fn run(sioe: &StreamIoe, conf: &CmdOptConf) -> anyhow::Result<()> {
 
 fn run_0(sioe: &StreamIoe, files: &[String]) -> anyhow::Result<()> {
     adapt_input(sioe, files, |reader| -> anyhow::Result<()> {
-        std::io::copy(reader, &mut sioe.sout.lock())?;
+        std::io::copy(reader, &mut sioe.pout.lock())?;
         Ok(())
     })
 }

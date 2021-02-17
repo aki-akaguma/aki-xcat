@@ -1,6 +1,6 @@
 [package]
 name = "aki-xcat"
-version = "0.1.10"
+version = "0.1.11"
 authors = ["aki <aki.akaguma@hotmail.com>"]
 description = """
 concate files that are plain, gzip ... etc
@@ -35,9 +35,8 @@ libflate = { version = "1.0", optional = true }
 inflate = { version = "0.4.5", optional = true }
 
 anyhow = "1.0"
-simple-error = "0.2.0"
 flood-tide = { version="0.1", default-features=true, features=["stop_at_mm"] }
-runnel = "0.1"
+runnel = "0.2"
 
 [dev-dependencies]
 
@@ -51,7 +50,7 @@ members = [
 
 [package.metadata.deb]
 features = []
-section = "AAA-admin"
+section = "AAA-text"
 priority = "optional"
 maintainer = "aki <aki.akaguma@hotmail.com>"
 extended-description = """\
