@@ -22,11 +22,11 @@ where
     F: FnMut(&mut dyn Read) -> anyhow::Result<()>,
 {
     if files.is_empty() {
-        return f(&mut sioe.sin.lock());
+        return f(&mut sioe.pin.lock());
     } else {
         for path_s in files {
             if path_s == "-" {
-                return f(&mut sioe.sin.lock());
+                return f(&mut sioe.pin.lock());
             }
             do_cat_proc_file(path_s, &mut f)?;
         }

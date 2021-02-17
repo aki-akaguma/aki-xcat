@@ -59,19 +59,18 @@ macro_rules! do_execute {
     };
     ($args:expr, $sin:expr) => {{
         let sioe = StreamIoe {
-            sin: Box::new(StreamInStringIn::with_str($sin)),
-            sout: Box::new(StreamOutStringOut::default()),
-            serr: Box::new(StreamErrStringErr::default()),
+            pin: Box::new(StringIn::with_str($sin)),
+            pout: Box::new(StringOut::default()),
+            perr: Box::new(StringErr::default()),
         };
         let program = env!("CARGO_PKG_NAME");
         let r = execute(&sioe, &program, $args);
         match r {
             Ok(_) => {}
             Err(ref err) => {
-                let _ = sioe
-                    .serr
-                    .lock()
-                    .write_fmt(format_args!("{}: {}\n", program, err));
+                #[rustfmt::skip]
+                        let _ = sioe.perr.lock()
+                            .write_fmt(format_args!("{}: {}\n", program, err));
             }
         };
         (r, sioe)
@@ -80,10 +79,10 @@ macro_rules! do_execute {
 
 macro_rules! buff {
     ($sioe:expr, serr) => {
-        $sioe.serr.lock().buffer_str()
+        $sioe.perr.lock().buffer_str()
     };
     ($sioe:expr, sout) => {
-        $sioe.sout.lock().buffer_str()
+        $sioe.pout.lock().buffer_str()
     };
 }
 
@@ -140,7 +139,7 @@ mod test_0 {
 
 mod test_1 {
     use libaki_xcat::*;
-    use runnel::medium::stringio::*;
+    use runnel::medium::stringio::{StringErr, StringIn, StringOut};
     use runnel::*;
     use std::io::Write;
     //
@@ -162,7 +161,7 @@ mod test_1 {
 
 mod test_2 {
     use libaki_xcat::*;
-    use runnel::medium::stringio::*;
+    use runnel::medium::stringio::{StringErr, StringIn, StringOut};
     use runnel::*;
     use std::io::Write;
     //
@@ -193,8 +192,8 @@ mod test_2 {
 
 mod test_3 {
     /*
-    use streamio::stringio::*;
     use libaki_xcat::*;
+    use runnel::medium::stringio::{StringErr, StringIn, StringOut};
     use std::io::Write;
     //
      * can NOT test
