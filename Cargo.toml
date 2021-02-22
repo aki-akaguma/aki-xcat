@@ -1,6 +1,6 @@
 [package]
 name = "aki-xcat"
-version = "0.1.11"
+version = "0.1.12"
 authors = ["aki <aki.akaguma@hotmail.com>"]
 description = """
 concate files that are plain, gzip ... etc
@@ -36,7 +36,8 @@ inflate = { version = "0.4.5", optional = true }
 
 anyhow = "1.0"
 flood-tide = { version="0.1", default-features=true, features=["stop_at_mm"] }
-runnel = "0.2"
+runnel = "0.3"
+#runnel = { path="../../lib/runnel" }
 
 [dev-dependencies]
 
