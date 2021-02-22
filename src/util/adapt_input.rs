@@ -13,20 +13,20 @@ extern crate inflate;
 #[cfg(feature = "inflate")]
 use self::inflate::DeflateDecoder;
 
-use runnel::StreamIoe;
+use runnel::RunnelIoe;
 use std::fs::File;
 use std::io::{BufReader, Read, Seek, SeekFrom};
 
-pub fn adapt_input<F>(sioe: &StreamIoe, files: &[String], mut f: F) -> anyhow::Result<()>
+pub fn adapt_input<F>(sioe: &RunnelIoe, files: &[String], mut f: F) -> anyhow::Result<()>
 where
     F: FnMut(&mut dyn Read) -> anyhow::Result<()>,
 {
     if files.is_empty() {
-        return f(&mut sioe.pin.lock());
+        return f(&mut sioe.pin().lock());
     } else {
         for path_s in files {
             if path_s == "-" {
-                return f(&mut sioe.pin.lock());
+                return f(&mut sioe.pin().lock());
             }
             do_cat_proc_file(path_s, &mut f)?;
         }
