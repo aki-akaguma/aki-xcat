@@ -9,21 +9,18 @@ include!("cmd.help.rs.txt");
 
 //{{{ TEXT
 const DESCRIPTIONS_TEXT: &str = r#"
-cat and zcat by rust lang.
+this is a like cat, zcat, xzcat and zstdcat.
 with no <file> or when <file> is -, read standard input.
+automatic discovery file type: plain, gz, xz and zst.
 "#;
-/*
 const ARGUMENTS_TEXT: &str = r#"Argument:
-  <url>                     url to getting, protocol is http or ftp
+  <file>         utf-8 encoded text file. A compressed file of it by gzip, xz, zstd.
 "#;
 
 const EXAMPLES_TEXT: &str = r#"Examples:
-  You  can specify multiple URLs or parts of URLs by writing part sets within braces as in:
-    curl "http://site.{one,two,three}.comn"
-  you can get sequences of alphanumeric series by using [] as in:
-    curl "ftp://ftp.example.com/file[1-100].txt"
+  You can simple use. Just arrange the files.
+    aki-xcat file1 file2.gz file3.xz file4.zst
 "#;
-*/
 //}}} TEXT
 
 //----------------------------------------------------------------------
@@ -42,8 +39,7 @@ fn usage_message(program: &str) -> String {
 fn help_message(program: &str) -> String {
     let ver = version_message(program);
     let usa = usage_message(env!("CARGO_PKG_NAME"));
-    //[ &ver, "", &usa, DESCRIPTIONS_TEXT, OPTIONS_TEXT, ARGUMENTS_TEXT, EXAMPLES_TEXT].join("\n")
-    [ &ver, "", &usa, DESCRIPTIONS_TEXT, OPTIONS_TEXT].join("\n")
+    [ &ver, "", &usa, DESCRIPTIONS_TEXT, OPTIONS_TEXT, ARGUMENTS_TEXT, EXAMPLES_TEXT].join("\n")
 }
 
 //----------------------------------------------------------------------
@@ -64,9 +60,7 @@ pub fn parse_cmdopts(a_prog_name: &str, args: &[&str]) -> Result<CmdOptConf, Opt
     //
     if conf.is_help() {
         let mut errs = OptParseErrors::new();
-        errs.push(OptParseError::help_message(&help_message(
-            &conf.prog_name,
-        )));
+        errs.push(OptParseError::help_message(&help_message(&conf.prog_name)));
         return Err(errs);
     }
     if conf.is_version() {

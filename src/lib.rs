@@ -1,16 +1,24 @@
 //!
-//! concatenate files that are plain, gzip ... etc.
+//! concatenate files that are plain, gzip, xz and zstd.
 //!
 //! ```text
 //! Usage:
 //!   aki-xcat [options] [<file>...]
 //!
-//! cat and zcat by rust lang.
+//! this is a like cat, zcat, xzcat and zstdcat.
 //! with no <file> or when <file> is -, read standard input.
+//! automatic discovery file type: plain, gz, xz and zst.
 //!
 //! Options:
 //!   -H, --help     display this help and exit
 //!   -V, --version  display version information and exit
+//! 
+//! Argument:
+//!   <file>         utf-8 encoded text file. A compressed file of it by gzip, xz, zstd.
+//! 
+//! Examples:
+//!   You can simple use. Just arrange the files.
+//!     aki-xcat file1 file2.gz file3.xz file4.zst
 //! ```
 //!
 //! # Examples
@@ -49,6 +57,13 @@
 //! HIJKLMN
 //! ```
 //!
+//! ### Command line example 2
+//!
+//! concatenate plain text file, gzip text file, xz text file and zstd text file.
+//! ```text
+//! aki-xcat fixtures/plain.txt fixtures/gztext.txt.gz fixtures/xztext.txt.xz  fixtures/zstext.txt.zst
+//! ```
+//!
 //! ### Library example
 //!
 //! See [`fn execute()`] for this library examples.
@@ -70,11 +85,11 @@ use std::io::Write;
 const TRY_HELP_MSG: &str = "Try --help for help.";
 
 ///
-/// execute gsub
+/// execute xcat
 ///
 /// params:
 ///   - sioe: stream in/out/err
-///   - program: program name. etc. "gsub"
+///   - program: program name. etc. "xcat"
 ///   - args: parameter arguments.
 ///
 /// return:
@@ -87,7 +102,7 @@ const TRY_HELP_MSG: &str = "Try --help for help.";
 /// use runnel::RunnelIoeBuilder;
 ///
 /// let r = libaki_xcat::execute(&RunnelIoeBuilder::new().build(),
-///     "xcat", &["file1", "file2.gz", "file3.gz"]);
+///     "xcat", &["file1", "file2.gz", "file3.xz", "file4.zst"]);
 /// ```
 ///
 pub fn execute(sioe: &RunnelIoe, prog_name: &str, args: &[&str]) -> anyhow::Result<()> {

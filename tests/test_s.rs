@@ -6,12 +6,20 @@ macro_rules! help_msg {
             "Usage:\n",
             "  aki-xcat [options] [<file>...]\n",
             "\n",
-            "cat and zcat by rust lang.\n",
+            "this is a like cat, zcat, xzcat and zstdcat.\n",
             "with no <file> or when <file> is -, read standard input.\n",
+            "automatic discovery file type: plain, gz, xz and zst.\n",
             "\n",
             "Options:\n",
             "  -H, --help     display this help and exit\n",
             "  -V, --version  display version information and exit\n",
+            "\n",
+            "Argument:\n",
+            "  <file>         utf-8 encoded text file. A compressed file of it by gzip, xz, zstd.\n",
+            "\n",
+            "Examples:\n",
+            "  You can simple use. Just arrange the files.\n",
+            "    aki-xcat file1 file2.gz file3.xz file4.zst\n",
             "\n"
         )
     };
@@ -45,6 +53,16 @@ macro_rules! fixture_gz {
         "fixtures/gztext.txt.gz"
     };
 }
+macro_rules! fixture_xz {
+    () => {
+        "fixtures/xztext.txt.xz"
+    };
+}
+macro_rules! fixture_zstd {
+    () => {
+        "fixtures/zstext.txt.zst"
+    };
+}
 /*
 macro_rules! fixture_text10k {
     () => {
@@ -52,7 +70,13 @@ macro_rules! fixture_text10k {
     };
 }
 */
+macro_rules! fixture_invalid_utf8 {
+    () => {
+        "fixtures/invalid_utf8.txt"
+    };
+}
 
+#[rustfmt::skip]
 macro_rules! do_execute {
     ($args:expr) => {
         do_execute!($args, "")
@@ -68,9 +92,8 @@ macro_rules! do_execute {
         match r {
             Ok(_) => {}
             Err(ref err) => {
-                #[rustfmt::skip]
-                            let _ = sioe.perr().lock()
-                                .write_fmt(format_args!("{}: {}\n", program, err));
+                let _ = sioe.perr().lock()
+                .write_fmt(format_args!("{}: {:#}\n", program, err));
             }
         };
         (r, sioe)
@@ -181,12 +204,59 @@ mod test_2 {
         assert_eq!(r.is_ok(), true);
     }
     //
+    #[cfg(feature = "xz2")]
     #[test]
-    fn test_plain_and_gz() {
-        let (r, sioe) = do_execute!(&[fixture_plain!(), fixture_gz!()], "");
+    fn test_xz() {
+        let (r, sioe) = do_execute!(&[fixture_xz!()], "");
         assert_eq!(buff!(sioe, serr), "");
-        assert_eq!(buff!(sioe, sout), "abcdefg\nhijklmn\nABCDEFG\nHIJKLMN\n");
+        assert_eq!(buff!(sioe, sout), "ABCDEFG\nHIJKLMN\n");
         assert_eq!(r.is_ok(), true);
+    }
+    //
+    #[cfg(feature = "zstd")]
+    #[test]
+    fn test_zstd() {
+        let (r, sioe) = do_execute!(&[fixture_zstd!()], "");
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(buff!(sioe, sout), "ABCDEFG\nHIJKLMN\n");
+        assert_eq!(r.is_ok(), true);
+    }
+    //
+    #[cfg(feature = "xz2")]
+    #[cfg(feature = "zstd")]
+    #[test]
+    fn test_plain_gz_xz() {
+        let (r, sioe) = do_execute!(
+            &[
+                fixture_plain!(),
+                fixture_gz!(),
+                fixture_xz!(),
+                fixture_zstd!()
+            ],
+            ""
+        );
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(
+            buff!(sioe, sout),
+            "abcdefg\nhijklmn\nABCDEFG\nHIJKLMN\nABCDEFG\nHIJKLMN\nABCDEFG\nHIJKLMN\n"
+        );
+        assert_eq!(r.is_ok(), true);
+    }
+    //
+    #[test]
+    fn test_invalid_utf8() {
+        let (r, sioe) = do_execute!(&[fixture_invalid_utf8!()], "");
+        assert_eq!(
+            buff!(sioe, serr),
+            concat!(
+                program_name!(),
+                ": Failed to read from \'",
+                fixture_invalid_utf8!(),
+                "\': stream did not contain valid UTF-8\n",
+            )
+        );
+        assert_eq!(buff!(sioe, sout), "");
+        assert_eq!(r.is_ok(), false);
     }
 }
 
