@@ -16,12 +16,20 @@ aki-xcat --help
 Usage:
   aki-xcat [options] [<file>...]
 
-cat and zcat by rust lang.
+this is a like cat, zcat, xzcat and zstdcat.
 with no <file> or when <file> is -, read standard input.
+automatic discovery file type: plain, gz, xz and zst.
 
 Options:
   -H, --help     display this help and exit
   -V, --version  display version information and exit
+
+Argument:
+  <file>         utf-8 encoded text file. A compressed file of it by gzip, xz, zstd.
+
+Examples:
+  You can simple use. Just arrange the files.
+    aki-xcat file1 file2.gz file3.xz file4.zst
 ```
 
 * minimum support rustc 1.38.0
@@ -76,6 +84,13 @@ abcdefg
 hijklmn
 ABCDEFG
 HIJKLMN
+```
+
+#### Command line example 2
+
+concatenate plain text file, gzip text file, xz text file and zstd text file.
+```
+aki-xcat fixtures/plain.txt fixtures/gztext.txt.gz fixtures/xztext.txt.xz  fixtures/zstext.txt.zst
 ```
 
 #### Library example

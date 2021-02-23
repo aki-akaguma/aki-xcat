@@ -1,6 +1,4 @@
 // build.rs
-
-use rustc_version;
 use rustc_version as rs_v;
 
 fn main() {

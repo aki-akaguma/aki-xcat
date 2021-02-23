@@ -21,9 +21,7 @@ static GLOBAL: std::heap::System = std::heap::System;
 static GLOBAL: std::alloc::System = std::alloc::System;
 
 use libaki_xcat::execute;
-
 use runnel::RunnelIoeBuilder;
-
 use std::io::Write;
 
 fn main() {
@@ -39,7 +37,7 @@ fn main() {
         Err(err) => {
             #[rustfmt::skip]
             let _ = sioe.perr().lock()
-                .write_fmt(format_args!("{}: {}\n", program, err));
+                .write_fmt(format_args!("{}: {:#}\n", program, err));
             std::process::exit(1);
         }
     };

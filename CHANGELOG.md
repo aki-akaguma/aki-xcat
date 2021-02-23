@@ -2,6 +2,14 @@ TBD
 ===
 Unreleased changes. Release notes have not yet been written.
 
+0.1.13 (2021-02-24)
+=====
+Feature:
+
+* fix error display
+* add support xz2, zstd
+* update dependencies: flate2
+
 0.1.12 (2021-02-22)
 =====
 Feature:
