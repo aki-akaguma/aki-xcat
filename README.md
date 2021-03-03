@@ -16,13 +16,15 @@ aki-xcat --help
 Usage:
   aki-xcat [options] [<file>...]
 
-this is a like cat, zcat, xzcat and zstdcat.
+this is like a cat, zcat, xzcat and zstdcat.
 with no <file> or when <file> is -, read standard input.
 automatic discovery file type: plain, gz, xz and zst.
 
 Options:
-  -H, --help     display this help and exit
-  -V, --version  display version information and exit
+  -p, --pipe-in <num>   read from pipe <num> [unimplemented]
+
+  -H, --help        display this help and exit
+  -V, --version     display version information and exit
 
 Argument:
   <file>         utf-8 encoded text file. A compressed file of it by gzip, xz, zstd.

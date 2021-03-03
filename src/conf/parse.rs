@@ -9,7 +9,7 @@ include!("cmd.help.rs.txt");
 
 //{{{ TEXT
 const DESCRIPTIONS_TEXT: &str = r#"
-this is a like cat, zcat, xzcat and zstdcat.
+this is like a cat, zcat, xzcat and zstdcat.
 with no <file> or when <file> is -, read standard input.
 automatic discovery file type: plain, gz, xz and zst.
 "#;

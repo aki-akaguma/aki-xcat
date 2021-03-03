@@ -1,6 +1,6 @@
 [package]
 name = "aki-xcat"
-version = "0.1.13"
+version = "0.1.14"
 authors = ["aki <aki.akaguma@hotmail.com>"]
 description = """
 concatenate files that are plain, gzip, xz and zstd.
@@ -31,7 +31,6 @@ default = ["flate2", "xz2", "zstd"]
 anyhow = "1.0"
 flood-tide = { version="0.1", default-features=true, features=["stop_at_mm"] }
 runnel = "0.3"
-#runnel = { path="../../lib/runnel" }
 
 flate2 = { version = "=1.0.20", features = ["rust_backend"], default-features = false, optional = true }
 libflate = { version = "1.0", optional = true }

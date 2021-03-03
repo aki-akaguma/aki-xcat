@@ -2,6 +2,13 @@ TBD
 ===
 Unreleased changes. Release notes have not yet been written.
 
+0.1.14 (2021-03-03)
+=====
+Feature:
+
+* add option: '-p, --pipe-in <num>   write to pipe <num> [unimplemented]'
+* fix misspell
+
 0.1.13 (2021-02-24)
 =====
 Feature:
