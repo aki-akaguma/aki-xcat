@@ -23,13 +23,14 @@ dependencies = [
 
 [[package]]
 name = "aki-xcat"
-version = "0.1.14"
+version = "0.1.15"
 dependencies = [
  "anyhow",
  "flate2",
  "flood-tide",
  "inflate",
  "libflate",
+ "lz4",
  "runnel",
  "rustc_version",
  "xz2",
@@ -171,6 +172,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3286f09f7d4926fc486334f28d8d2e6ebe4f7f9994494b6dab27ddfad2c9b11b"
 
 [[package]]
+name = "lz4"
+version = "1.23.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "aac20ed6991e01bf6a2e68cc73df2b389707403662a8ba89f68511fb340f724c"
+dependencies = [
+ "libc",
+ "lz4-sys",
+]
+
+[[package]]
+name = "lz4-sys"
+version = "1.9.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dca79aa95d8b3226213ad454d328369853be3a1382d89532a854f4d69640acae"
+dependencies = [
+ "cc",
+ "libc",
+]
+
+[[package]]
 name = "lzma-sys"
 version = "0.1.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -235,9 +256,9 @@ checksum = "cabe4fa914dec5870285fa7f71f602645da47c486e68486d2b4ceb4a343e90ac"
 
 [[package]]
 name = "runnel"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5bd102a18a9e1402942c423398d0349c57796bd5bcb3345bf50ed53201568354"
+checksum = "e32f8f3d62a219f12a78f1311628b99b1e5535d1c0627cca83e7dc78423a65f2"
 dependencies = [
  "rustc_version",
 ]

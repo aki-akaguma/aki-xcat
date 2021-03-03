@@ -8,9 +8,9 @@ macro_rules! help_msg {
             "Usage:\n",
             "  aki-xcat [options] [<file>...]\n",
             "\n",
-            "this is like a cat, zcat, xzcat and zstdcat.\n",
+            "this is like a cat, zcat, xzcat, zstdcat and lz4cat.\n",
             "with no <file> or when <file> is -, read standard input.\n",
-            "automatic discovery file type: plain, gz, xz and zst.\n",
+            "automatic discovery file type: plain, gz, xz, zst and lz4.\n",
             "\n",
             "Options:\n",
             "  -p, --pipe-in <num>   read from pipe <num> [unimplemented]\n",
@@ -19,11 +19,11 @@ macro_rules! help_msg {
             "  -V, --version     display version information and exit\n",
             "\n",
             "Argument:\n",
-            "  <file>         utf-8 encoded text file. A compressed file of it by gzip, xz, zstd.\n",
+            "  <file>         utf-8 encoded text file. A compressed file of it by gzip, xz, zstd, lz4.\n",
             "\n",
             "Examples:\n",
             "  You can simple use. Just arrange the files.\n",
-            "    aki-xcat file1 file2.gz file3.xz file4.zst\n",
+            "    aki-xcat file1 file2.gz file3.xz file4.zst file5.lz4\n",
             "\n"
         )
     };
@@ -65,6 +65,11 @@ macro_rules! fixture_xz {
 macro_rules! fixture_zstd {
     () => {
         "fixtures/zstext.txt.zst"
+    };
+}
+macro_rules! fixture_lz4 {
+    () => {
+        "fixtures/lz4text.txt.lz4"
     };
 }
 macro_rules! fixture_text10k {
@@ -187,11 +192,20 @@ mod test_2 {
         assert_eq!(oup.stdout, "ABCDEFG\nHIJKLMN\n");
         assert_eq!(oup.status.success(), true);
     }
+    #[cfg(feature = "lz4")]
+    #[test]
+    fn test_lz4() {
+        let oup = exec_target(TARGET_EXE_PATH, &[fixture_lz4!()]);
+        assert_eq!(oup.stderr, "");
+        assert_eq!(oup.stdout, "ABCDEFG\nHIJKLMN\n");
+        assert_eq!(oup.status.success(), true);
+    }
     //
     #[cfg(feature = "xz2")]
     #[cfg(feature = "zstd")]
+    #[cfg(feature = "lz4")]
     #[test]
-    fn test_plain_gz_xz() {
+    fn test_plain_gz_xz_zst_lz4() {
         let oup = exec_target(
             TARGET_EXE_PATH,
             &[
@@ -199,12 +213,19 @@ mod test_2 {
                 fixture_gz!(),
                 fixture_xz!(),
                 fixture_zstd!(),
+                fixture_lz4!(),
             ],
         );
         assert_eq!(oup.stderr, "");
         assert_eq!(
             oup.stdout,
-            "abcdefg\nhijklmn\nABCDEFG\nHIJKLMN\nABCDEFG\nHIJKLMN\nABCDEFG\nHIJKLMN\n"
+            concat!(
+                "abcdefg\nhijklmn\n",
+                "ABCDEFG\nHIJKLMN\n",
+                "ABCDEFG\nHIJKLMN\n",
+                "ABCDEFG\nHIJKLMN\n",
+                "ABCDEFG\nHIJKLMN\n",
+            )
         );
         assert_eq!(oup.status.success(), true);
     }

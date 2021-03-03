@@ -9,17 +9,17 @@ include!("cmd.help.rs.txt");
 
 //{{{ TEXT
 const DESCRIPTIONS_TEXT: &str = r#"
-this is like a cat, zcat, xzcat and zstdcat.
+this is like a cat, zcat, xzcat, zstdcat and lz4cat.
 with no <file> or when <file> is -, read standard input.
-automatic discovery file type: plain, gz, xz and zst.
+automatic discovery file type: plain, gz, xz, zst and lz4.
 "#;
 const ARGUMENTS_TEXT: &str = r#"Argument:
-  <file>         utf-8 encoded text file. A compressed file of it by gzip, xz, zstd.
+  <file>         utf-8 encoded text file. A compressed file of it by gzip, xz, zstd, lz4.
 "#;
 
 const EXAMPLES_TEXT: &str = r#"Examples:
   You can simple use. Just arrange the files.
-    aki-xcat file1 file2.gz file3.xz file4.zst
+    aki-xcat file1 file2.gz file3.xz file4.zst file5.lz4
 "#;
 //}}} TEXT
 
