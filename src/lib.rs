@@ -5,9 +5,9 @@
 //! Usage:
 //!   aki-xcat [options] [<file>...]
 //!
-//! this is like a cat, zcat, xzcat and zstdcat.
+//! this is like a cat, zcat, xzcat, zstdcat and lz4cat.
 //! with no <file> or when <file> is -, read standard input.
-//! automatic discovery file type: plain, gz, xz and zst.
+//! automatic discovery file type: plain, gz, xz, zst and lz4.
 //!
 //! Options:
 //!   -p, --pipe-in <num>   read from pipe <num> [unimplemented]
@@ -16,11 +16,11 @@
 //!   -V, --version     display version information and exit
 //!
 //! Argument:
-//!   <file>         utf-8 encoded text file. A compressed file of it by gzip, xz, zstd.
+//!   <file>         utf-8 encoded text file. A compressed file of it by gzip, xz, zstd, lz4.
 //!
 //! Examples:
 //!   You can simple use. Just arrange the files.
-//!     aki-xcat file1 file2.gz file3.xz file4.zst
+//!     aki-xcat file1 file2.gz file3.xz file4.zst file5.lz4
 //! ```
 //!
 //! # Examples
@@ -61,9 +61,9 @@
 //!
 //! ### Command line example 2
 //!
-//! concatenate plain text file, gzip text file, xz text file and zstd text file.
+//! concatenate plain text file, gzip text file, xz text file, zstd text file and lz4 text file.
 //! ```text
-//! aki-xcat fixtures/plain.txt fixtures/gztext.txt.gz fixtures/xztext.txt.xz  fixtures/zstext.txt.zst
+//! aki-xcat fixtures/plain.txt fixtures/gztext.txt.gz fixtures/xztext.txt.xz  fixtures/zstext.txt.zst fixtures/lz4text.txt.lz4
 //! ```
 //!
 //! ### Library example

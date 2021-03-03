@@ -2,16 +2,22 @@ TBD
 ===
 Unreleased changes. Release notes have not yet been written.
 
+0.1.15 (2021-03-03)
+=====
+
+* bug fix: double buffer in adapt_input()
+* update crate: runnel
+* add lz4
+* bug fix: signature match of input file
+
 0.1.14 (2021-03-03)
 =====
-Feature:
 
 * add option: '-p, --pipe-in <num>   write to pipe <num> [unimplemented]'
 * fix misspell
 
 0.1.13 (2021-02-24)
 =====
-Feature:
 
 * fix error display
 * add support xz2, zstd
@@ -19,14 +25,12 @@ Feature:
 
 0.1.12 (2021-02-22)
 =====
-Feature:
 
 * fix bug: add flush() on finish.
 * update crate: runnel, flood-tide-gen
 
 0.1.11 (2021-02-17)
 =====
-Feature:
 
 * update crate runnel
 * add doc
@@ -34,13 +38,11 @@ Feature:
 
 0.1.10 (2021-02-07)
 =====
-Feature:
 
 * initial github
 
 0.1.9 (2021-02-07)
 =====
-Feature:
 
 * import crate exec-target from local, for test.
 * add xtask
@@ -50,14 +52,12 @@ Feature:
 
 0.1.8 (2020-12-29)
 =====
-Feature:
 
 * update crates
 * remove optpaerr-1
 
 0.1.7 (2020-11-17)
 =====
-Feature:
 
 * fix old version: rustc_version(=0.2.3), v0.3.0 is not compile new semver on deb10-buster
 * add support cargo deb
@@ -66,27 +66,23 @@ Feature:
 
 0.1.6 (2020-05-10)
 =====
-Feature:
 
 * update crates
 
 0.1.5 (2020-05-10)
 =====
-Feature:
 
 * change edition 2015 to 2018.
 * update crates
 
 0.1.4 (2020-03-30)
 =====
-Feature:
 
 * add support broken pipe and test
 * update crates
 
 0.1.3 (2019-04-14)
 =====
-Feature:
 
 * add rustc version info
 * update crates
@@ -94,7 +90,6 @@ Feature:
 
 0.1.1 (2018-05-22)
 =====
-Feature:
 
 * add support cfg(has_global_allocator)
 * add support libflate,flate2 and flate backends
