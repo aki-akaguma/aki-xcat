@@ -2,6 +2,13 @@ TBD
 ===
 Unreleased changes. Release notes have not yet been written.
 
+0.1.16 (2021-03-05)
+=====
+
+* output line number for each lines
+* output file or path name for each lines
+* update crates
+
 0.1.15 (2021-03-03)
 =====
 

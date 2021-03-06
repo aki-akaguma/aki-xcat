@@ -1,25 +1,3 @@
-/*
-global system allocator: 2017/04/17
-https://doc.rust-lang.org/beta/unstable-book/language-features/global-allocator.html
-
-the standard library has one “global” memory allocator: 2018/06/15 ver. 1.28.0-nightly
-https://doc.rust-lang.org/nightly/std/alloc/index.html
-
-jemalloc is removed by default
-https://blog.rust-lang.org/2019/01/17/Rust-1.32.0.html#jemalloc-is-removed-by-default
-*/
-#![cfg_attr(
-    has_global_allocator,
-    feature(global_allocator, allocator_api, heap_api)
-)]
-#[cfg(has_global_allocator)]
-#[global_allocator]
-static GLOBAL: std::heap::System = std::heap::System;
-
-#[cfg(has_std_alloc)]
-#[global_allocator]
-static GLOBAL: std::alloc::System = std::alloc::System;
-
 use libaki_xcat::execute;
 use runnel::RunnelIoeBuilder;
 use std::io::Write;
