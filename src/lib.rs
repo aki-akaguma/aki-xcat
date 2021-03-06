@@ -10,6 +10,9 @@
 //! automatic discovery file type: plain, gz, xz, zst and lz4.
 //!
 //! Options:
+//!   -n, --number          output line number for each lines
+//!   -f, --file-name       output file name for each lines
+//!       --path-name       output path name for each lines
 //!   -p, --pipe-in <num>   read from pipe <num> [unimplemented]
 //!
 //!   -H, --help        display this help and exit
@@ -25,9 +28,8 @@
 //!
 //! # Examples
 //!
-//! ### Command line example 1
+//! The input file used in this example looks like this:
 //!
-//! concatenate plain text file.
 //! ```text
 //! cat fixtures/plain.txt
 //! ```
@@ -37,7 +39,6 @@
 //! hijklmn
 //! ```
 //!
-//! concatenate gzip text file.
 //! ```text
 //! zcat fixtures/gztext.txt.gz
 //! ```
@@ -46,6 +47,8 @@
 //! ABCDEFG
 //! HIJKLMN
 //! ```
+//!
+//! ## Example 1: simple concatenate
 //!
 //! concatenate plain text file and gzip text file.
 //! ```text
@@ -59,11 +62,53 @@
 //! HIJKLMN
 //! ```
 //!
-//! ### Command line example 2
+//! ## Example 2: multi file formats
 //!
 //! concatenate plain text file, gzip text file, xz text file, zstd text file and lz4 text file.
 //! ```text
 //! aki-xcat fixtures/plain.txt fixtures/gztext.txt.gz fixtures/xztext.txt.xz  fixtures/zstext.txt.zst fixtures/lz4text.txt.lz4
+//! ```
+//!
+//! ## Example 3: output all line number
+//!
+//! concatenate plain text file and gzip text file.
+//! ```text
+//! aki-xcat -n fixtures/plain.txt fixtures/gztext.txt.gz
+//! ```
+//! result output :
+//! ```text
+//!      1  abcdefg
+//!      2  hijklmn
+//!      3  ABCDEFG
+//!      4  HIJKLMN
+//! ```
+//!
+//! ## Example 4: file name and line number
+//!
+//! concatenate plain text file and gzip text file.
+//! ```text
+//! aki-xcat -n -f fixtures/plain.txt fixtures/gztext.txt.gz
+//! ```
+//! result output :
+//! ```text
+//! "plain.txt"     1   abcdefg
+//! "plain.txt"     2   hijklmn
+//! "gztext.txt.gz"     1   ABCDEFG
+//! "gztext.txt.gz"     2   HIJKLMN
+//! ```
+//!
+//! ## Example 5: path name and line number
+//!
+//! concatenate plain text file and gzip text file.
+//! ```text
+//! aki-xcat -n --path-name fixtures/plain.txt fixtures/gztext.txt.gz
+//! ```
+//! result output :
+//! ```text
+//! "fixtures/plain.txt"     1  abcdefg
+//! "fixtures/plain.txt"     2  hijklmn
+//! "fixtures/gztext.txt.gz"     1  ABCDEFG
+//! "fixtures/gztext.txt.gz"     2  HIJKLMN
 //! ```
 //!
 //! ### Library example
@@ -104,7 +149,7 @@ const TRY_HELP_MSG: &str = "Try --help for help.";
 /// use runnel::RunnelIoeBuilder;
 ///
 /// let r = libaki_xcat::execute(&RunnelIoeBuilder::new().build(),
-///     "xcat", &["file1", "file2.gz", "file3.xz", "file4.zst"]);
+///     "xcat", &["-n", "file1", "file2.gz", "file3.xz", "file4.zst"]);
 /// ```
 ///
 pub fn execute(sioe: &RunnelIoe, prog_name: &str, args: &[&str]) -> anyhow::Result<()> {

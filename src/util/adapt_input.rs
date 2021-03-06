@@ -23,24 +23,26 @@ use std::io::{BufRead, BufReader, Read, Seek, SeekFrom};
 
 pub fn adapt_input<F>(sioe: &RunnelIoe, files: &[String], mut f: F) -> anyhow::Result<()>
 where
-    F: FnMut(&mut dyn BufRead) -> anyhow::Result<()>,
+    F: FnMut(&mut dyn BufRead, &str, usize) -> anyhow::Result<usize>,
 {
+    let mut line_num: usize = 0;
     if files.is_empty() {
-        return f(&mut sioe.pin().lock());
+        let _ = f(&mut sioe.pin().lock(), "", line_num)?;
     } else {
         for path_s in files {
             if path_s == "-" {
-                return f(&mut sioe.pin().lock());
+                line_num = f(&mut sioe.pin().lock(), "", line_num)?;
+            } else {
+                line_num = do_cat_proc_file(path_s, line_num, &mut f)?;
             }
-            do_cat_proc_file(path_s, &mut f)?;
         }
     }
     Ok(())
 }
 
-fn do_cat_proc_file<F>(path_s: &str, f: &mut F) -> anyhow::Result<()>
+fn do_cat_proc_file<F>(path_s: &str, line_num: usize, f: &mut F) -> anyhow::Result<usize>
 where
-    F: FnMut(&mut dyn BufRead) -> anyhow::Result<()>,
+    F: FnMut(&mut dyn BufRead, &str, usize) -> anyhow::Result<usize>,
 {
     let mut file = File::open(path_s).with_context(|| format!("can not open file: {}", path_s))?;
     //
@@ -60,7 +62,7 @@ where
                 //
                 let mut buf_reader = BufReader::new(gzd);
                 let reader: &mut dyn BufRead = &mut buf_reader;
-                return f(reader);
+                return f(reader, path_s, line_num);
             } else if buffer[0] == 0xfd
                 && buffer[1] == 0x37
                 && buffer[2] == 0x7A
@@ -75,7 +77,7 @@ where
                     //
                     let mut buf_reader = BufReader::new(xzd);
                     let reader: &mut dyn BufRead = &mut buf_reader;
-                    return f(reader);
+                    return f(reader, path_s, line_num);
                 }
             } else if buffer[0] == 0x28
                 && buffer[1] == 0xb5
@@ -91,7 +93,7 @@ where
                     //
                     let mut buf_reader = BufReader::new(zsd);
                     let reader: &mut dyn BufRead = &mut buf_reader;
-                    return f(reader);
+                    return f(reader, path_s, line_num);
                 }
             } else if buffer[0] == 0x04
                 && buffer[1] == 0x22
@@ -107,7 +109,7 @@ where
                     //
                     let mut buf_reader = BufReader::new(lz4);
                     let reader: &mut dyn BufRead = &mut buf_reader;
-                    return f(reader);
+                    return f(reader, path_s, line_num);
                 }
             } else if buffer[0] == 0x78
                 && (buffer[1] == 0x01
@@ -130,7 +132,7 @@ where
     file.seek(SeekFrom::Start(0))?;
     let mut buf_reader = BufReader::new(file);
     let reader: &mut dyn BufRead = &mut buf_reader;
-    f(reader).with_context(|| format!("Failed to read from '{}'", path_s))
+    f(reader, path_s, line_num).with_context(|| format!("Failed to read from '{}'", path_s))
 }
 /*
  * reference:

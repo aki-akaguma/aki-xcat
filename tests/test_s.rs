@@ -11,6 +11,9 @@ macro_rules! help_msg {
             "automatic discovery file type: plain, gz, xz, zst and lz4.\n",
             "\n",
             "Options:\n",
+            "  -n, --number          output line number for each lines\n",
+            "  -f, --file-name       output file name for each lines\n",
+            "      --path-name       output path name for each lines\n",
             "  -p, --pipe-in <num>   read from pipe <num> [unimplemented]\n",
             "\n",
             "  -H, --help        display this help and exit\n",
@@ -242,7 +245,7 @@ mod test_2 {
     #[cfg(feature = "zstd")]
     #[cfg(feature = "lz4")]
     #[test]
-    fn test_plain_gz_xz() {
+    fn test_plain_gz_xz_zst_lz4() {
         let (r, sioe) = do_execute!(
             &[
                 fixture_plain!(),
@@ -262,6 +265,113 @@ mod test_2 {
                 "ABCDEFG\nHIJKLMN\n",
                 "ABCDEFG\nHIJKLMN\n",
                 "ABCDEFG\nHIJKLMN\n",
+            )
+        );
+        assert_eq!(r.is_ok(), true);
+    }
+    //
+    #[cfg(feature = "xz2")]
+    #[cfg(feature = "zstd")]
+    #[cfg(feature = "lz4")]
+    #[test]
+    fn test_plain_gz_xz_zst_lz4_num() {
+        let (r, sioe) = do_execute!(
+            &[
+                "-n",
+                fixture_plain!(),
+                fixture_gz!(),
+                fixture_xz!(),
+                fixture_zstd!(),
+                fixture_lz4!(),
+            ],
+            ""
+        );
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(
+            buff!(sioe, sout),
+            concat!(
+                "     1\tabcdefg\n",
+                "     2\thijklmn\n",
+                "     3\tABCDEFG\n",
+                "     4\tHIJKLMN\n",
+                "     5\tABCDEFG\n",
+                "     6\tHIJKLMN\n",
+                "     7\tABCDEFG\n",
+                "     8\tHIJKLMN\n",
+                "     9\tABCDEFG\n",
+                "    10\tHIJKLMN\n",
+            )
+        );
+        assert_eq!(r.is_ok(), true);
+    }
+    //
+    #[cfg(feature = "xz2")]
+    #[cfg(feature = "zstd")]
+    #[cfg(feature = "lz4")]
+    #[test]
+    fn test_plain_gz_xz_zst_lz4_fnm_num() {
+        let (r, sioe) = do_execute!(
+            &[
+                "-n",
+                "-f",
+                fixture_plain!(),
+                fixture_gz!(),
+                fixture_xz!(),
+                fixture_zstd!(),
+                fixture_lz4!(),
+            ],
+            ""
+        );
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(
+            buff!(sioe, sout),
+            concat!(
+                "\"plain.txt\"     1\tabcdefg\n",
+                "\"plain.txt\"     2\thijklmn\n",
+                "\"gztext.txt.gz\"     1\tABCDEFG\n",
+                "\"gztext.txt.gz\"     2\tHIJKLMN\n",
+                "\"xztext.txt.xz\"     1\tABCDEFG\n",
+                "\"xztext.txt.xz\"     2\tHIJKLMN\n",
+                "\"zstext.txt.zst\"     1\tABCDEFG\n",
+                "\"zstext.txt.zst\"     2\tHIJKLMN\n",
+                "\"lz4text.txt.lz4\"     1\tABCDEFG\n",
+                "\"lz4text.txt.lz4\"     2\tHIJKLMN\n",
+            )
+        );
+        assert_eq!(r.is_ok(), true);
+    }
+    //
+    #[cfg(feature = "xz2")]
+    #[cfg(feature = "zstd")]
+    #[cfg(feature = "lz4")]
+    #[test]
+    fn test_plain_gz_xz_zst_lz4_pnm_num() {
+        let (r, sioe) = do_execute!(
+            &[
+                "-n",
+                "--path-name",
+                fixture_plain!(),
+                fixture_gz!(),
+                fixture_xz!(),
+                fixture_zstd!(),
+                fixture_lz4!(),
+            ],
+            ""
+        );
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(
+            buff!(sioe, sout),
+            concat!(
+                "\"fixtures/plain.txt\"     1\tabcdefg\n",
+                "\"fixtures/plain.txt\"     2\thijklmn\n",
+                "\"fixtures/gztext.txt.gz\"     1\tABCDEFG\n",
+                "\"fixtures/gztext.txt.gz\"     2\tHIJKLMN\n",
+                "\"fixtures/xztext.txt.xz\"     1\tABCDEFG\n",
+                "\"fixtures/xztext.txt.xz\"     2\tHIJKLMN\n",
+                "\"fixtures/zstext.txt.zst\"     1\tABCDEFG\n",
+                "\"fixtures/zstext.txt.zst\"     2\tHIJKLMN\n",
+                "\"fixtures/lz4text.txt.lz4\"     1\tABCDEFG\n",
+                "\"fixtures/lz4text.txt.lz4\"     2\tHIJKLMN\n",
             )
         );
         assert_eq!(r.is_ok(), true);
