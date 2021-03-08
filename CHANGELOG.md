@@ -2,6 +2,11 @@ TBD
 ===
 Unreleased changes. Release notes have not yet been written.
 
+0.1.17 (2021-03-08)
+=====
+
+* update crate: runnel
+
 0.1.16 (2021-03-05)
 =====
 

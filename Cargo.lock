@@ -23,7 +23,7 @@ dependencies = [
 
 [[package]]
 name = "aki-xcat"
-version = "0.1.16"
+version = "0.1.17"
 dependencies = [
  "anyhow",
  "flate2",
@@ -235,9 +235,9 @@ checksum = "cabe4fa914dec5870285fa7f71f602645da47c486e68486d2b4ceb4a343e90ac"
 
 [[package]]
 name = "runnel"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e32f8f3d62a219f12a78f1311628b99b1e5535d1c0627cca83e7dc78423a65f2"
+checksum = "1ecdcd0154c8e8cfddfb3190f1e6a75709f5e35ea15bd5a17dd39b6170b8fdb9"
 dependencies = [
  "rustc_version",
 ]
