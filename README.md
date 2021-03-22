@@ -145,3 +145,7 @@ result output :
 See [`fn execute()`] for this library examples.
 
 [`fn execute()`]: crate::execute
+
+## Changelogs
+
+[This crate's changelog here.](https://github.com/aki-akaguma/aki-xcat/blob/main/CHANGELOG.md)

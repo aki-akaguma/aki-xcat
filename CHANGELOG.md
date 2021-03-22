@@ -2,6 +2,11 @@ aki-xcat TBD
 ===
 Unreleased changes. Release notes have not yet been written.
 
+0.1.19 (2021-03-22)
+=====
+
+* update depends: anyhow, libflate
+
 0.1.18 (2021-03-08)
 =====
 
