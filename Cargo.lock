@@ -23,7 +23,7 @@ dependencies = [
 
 [[package]]
 name = "aki-xcat"
-version = "0.1.20"
+version = "0.1.21"
 dependencies = [
  "anyhow",
  "flate2",
@@ -99,9 +99,9 @@ checksum = "5c5a6ce2d4a1a36aff00d09c00a913bb5857429c8c9d9d0efb08d9f5bf01e908"
 
 [[package]]
 name = "flood-tide-gen"
-version = "0.1.8"
+version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8f1d4fb0bd05af971aa77546b4ecf8cf9c8e790f051938e16c42a8747873af88"
+checksum = "469e18a69e9e1114705aae74ba817afaa445c2f57a54985e3b6f61865c91f179"
 dependencies = [
  "anyhow",
  "case",
@@ -134,21 +134,23 @@ checksum = "9385f66bf6105b241aa65a61cb923ef20efc665cb9f9bb50ac2f0c4b7f378d41"
 
 [[package]]
 name = "libflate"
-version = "1.0.4"
+version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "158ae2ca09a761eaf6050894f5a6f013f2773dafe24f67bfa73a7504580e2916"
+checksum = "6d87eae36b3f680f7f01645121b782798b56ef33c53f83d1c66ba3a22b60bfe3"
 dependencies = [
  "adler32",
  "crc32fast",
  "libflate_lz77",
- "rle-decode-fast",
 ]
 
 [[package]]
 name = "libflate_lz77"
-version = "1.0.0"
+version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3286f09f7d4926fc486334f28d8d2e6ebe4f7f9994494b6dab27ddfad2c9b11b"
+checksum = "39a734c0493409afcd49deee13c006a04e3586b9761a03543c6272c9c51f2f5a"
+dependencies = [
+ "rle-decode-fast",
+]
 
 [[package]]
 name = "lz4"
