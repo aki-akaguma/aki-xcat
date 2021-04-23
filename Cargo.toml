@@ -1,6 +1,6 @@
 [package]
 name = "aki-xcat"
-version = "0.1.21"
+version = "0.1.22"
 authors = ["aki <aki.akaguma@hotmail.com>"]
 description = """
 concatenate files that are plain, gzip, xz and zstd.
@@ -42,6 +42,7 @@ lz4 = { version = "1.23", optional = true }
 [dev-dependencies]
 
 [build-dependencies]
+rust-version-info-file = "0.1"
 rustc_version = "0.3"
 
 [workspace]
@@ -58,6 +59,9 @@ extended-description = """\
 concatenate files that are plain, gzip, xz and zstd.
 """
 depends = "$auto"
+separate-debug-symbols = true
 assets = [
     ["target/release/aki-xcat", "usr/bin/", "755"],
+    ["target/rust-version-info.txt", "usr/share/doc/aki-xcat/", "644"],
+    ["README.md", "usr/share/doc/aki-xcat/", "644"],
 ]
