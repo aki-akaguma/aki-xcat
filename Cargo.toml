@@ -1,6 +1,6 @@
 [package]
 name = "aki-xcat"
-version = "0.1.23"
+version = "0.1.24"
 authors = ["aki <aki.akaguma@hotmail.com>"]
 description = """
 concatenate files that are plain, gzip, xz and zstd.
@@ -26,6 +26,7 @@ path = "src/main.rs"
 default = ["flate2", "xz2", "zstd", "lz4"]
 #default = ["libflate"]
 #default = ["inflate"]
+debian_build = []
 
 [dependencies]
 anyhow = "1.0"
@@ -51,7 +52,7 @@ members = [
 ]
 
 [package.metadata.deb]
-features = []
+features = ["debian_build"]
 section = "AAA-text"
 priority = "optional"
 maintainer = "aki <aki.akaguma@hotmail.com>"
