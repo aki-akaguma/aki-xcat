@@ -85,6 +85,18 @@ macro_rules! fixture_invalid_utf8 {
     () => {
         "fixtures/invalid_utf8.txt"
     };
+    (gz) => {
+        "fixtures/invalid_utf8.txt.gz"
+    };
+    (lz4) => {
+        "fixtures/invalid_utf8.txt.lz4"
+    };
+    (xz) => {
+        "fixtures/invalid_utf8.txt.xz"
+    };
+    (zstd) => {
+        "fixtures/invalid_utf8.txt.zst"
+    };
 }
 
 #[rustfmt::skip]
@@ -387,6 +399,70 @@ mod test_2 {
                 program_name!(),
                 ": Failed to read from \'",
                 fixture_invalid_utf8!(),
+                "\': stream did not contain valid UTF-8\n",
+            )
+        );
+        assert_eq!(buff!(sioe, sout), "");
+        assert_eq!(r.is_ok(), false);
+    }
+    //
+    #[test]
+    fn test_invalid_utf8_gz() {
+        let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(gz)], "");
+        assert_eq!(
+            buff!(sioe, serr),
+            concat!(
+                program_name!(),
+                ": Failed to read from \'",
+                fixture_invalid_utf8!(gz),
+                "\': stream did not contain valid UTF-8\n",
+            )
+        );
+        assert_eq!(buff!(sioe, sout), "");
+        assert_eq!(r.is_ok(), false);
+    }
+    //
+    #[test]
+    fn test_invalid_utf8_lz4() {
+        let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(lz4)], "");
+        assert_eq!(
+            buff!(sioe, serr),
+            concat!(
+                program_name!(),
+                ": Failed to read from \'",
+                fixture_invalid_utf8!(lz4),
+                "\': stream did not contain valid UTF-8\n",
+            )
+        );
+        assert_eq!(buff!(sioe, sout), "");
+        assert_eq!(r.is_ok(), false);
+    }
+    //
+    #[test]
+    fn test_invalid_utf8_xz() {
+        let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(xz)], "");
+        assert_eq!(
+            buff!(sioe, serr),
+            concat!(
+                program_name!(),
+                ": Failed to read from \'",
+                fixture_invalid_utf8!(xz),
+                "\': stream did not contain valid UTF-8\n",
+            )
+        );
+        assert_eq!(buff!(sioe, sout), "");
+        assert_eq!(r.is_ok(), false);
+    }
+    //
+    #[test]
+    fn test_invalid_utf8_zstd() {
+        let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(zstd)], "");
+        assert_eq!(
+            buff!(sioe, serr),
+            concat!(
+                program_name!(),
+                ": Failed to read from \'",
+                fixture_invalid_utf8!(zstd),
                 "\': stream did not contain valid UTF-8\n",
             )
         );

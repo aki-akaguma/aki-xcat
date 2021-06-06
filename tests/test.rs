@@ -85,6 +85,18 @@ macro_rules! fixture_invalid_utf8 {
     () => {
         "fixtures/invalid_utf8.txt"
     };
+    (gz) => {
+        "fixtures/invalid_utf8.txt.gz"
+    };
+    (lz4) => {
+        "fixtures/invalid_utf8.txt.lz4"
+    };
+    (xz) => {
+        "fixtures/invalid_utf8.txt.xz"
+    };
+    (zstd) => {
+        "fixtures/invalid_utf8.txt.zst"
+    };
 }
 
 mod helper;
@@ -350,6 +362,70 @@ mod test_2 {
                 program_name!(),
                 ": Failed to read from \'",
                 fixture_invalid_utf8!(),
+                "\': stream did not contain valid UTF-8\n",
+            )
+        );
+        assert_eq!(oup.stdout, "");
+        assert_eq!(oup.status.success(), false);
+    }
+    //
+    #[test]
+    fn test_invalid_utf8_gz() {
+        let oup = exec_target(TARGET_EXE_PATH, &[fixture_invalid_utf8!(gz)]);
+        assert_eq!(
+            oup.stderr,
+            concat!(
+                program_name!(),
+                ": Failed to read from \'",
+                fixture_invalid_utf8!(gz),
+                "\': stream did not contain valid UTF-8\n",
+            )
+        );
+        assert_eq!(oup.stdout, "");
+        assert_eq!(oup.status.success(), false);
+    }
+    //
+    #[test]
+    fn test_invalid_utf8_lz4() {
+        let oup = exec_target(TARGET_EXE_PATH, &[fixture_invalid_utf8!(lz4)]);
+        assert_eq!(
+            oup.stderr,
+            concat!(
+                program_name!(),
+                ": Failed to read from \'",
+                fixture_invalid_utf8!(lz4),
+                "\': stream did not contain valid UTF-8\n",
+            )
+        );
+        assert_eq!(oup.stdout, "");
+        assert_eq!(oup.status.success(), false);
+    }
+    //
+    #[test]
+    fn test_invalid_utf8_xz() {
+        let oup = exec_target(TARGET_EXE_PATH, &[fixture_invalid_utf8!(xz)]);
+        assert_eq!(
+            oup.stderr,
+            concat!(
+                program_name!(),
+                ": Failed to read from \'",
+                fixture_invalid_utf8!(xz),
+                "\': stream did not contain valid UTF-8\n",
+            )
+        );
+        assert_eq!(oup.stdout, "");
+        assert_eq!(oup.status.success(), false);
+    }
+    //
+    #[test]
+    fn test_invalid_utf8_zstd() {
+        let oup = exec_target(TARGET_EXE_PATH, &[fixture_invalid_utf8!(zstd)]);
+        assert_eq!(
+            oup.stderr,
+            concat!(
+                program_name!(),
+                ": Failed to read from \'",
+                fixture_invalid_utf8!(zstd),
                 "\': stream did not contain valid UTF-8\n",
             )
         );
