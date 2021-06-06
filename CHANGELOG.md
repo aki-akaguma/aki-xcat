@@ -2,6 +2,12 @@ aki-xcat TBD
 ===
 Unreleased changes. Release notes have not yet been written.
 
+0.1.25 (2021-06-06)
+=====
+
+* update depends: zstd(0.8.3+zstd.1.5.0)
+* bug fix: output a meager error message for compressed files containing invalid UTF-8 sequence
+
 0.1.24 (2021-06-03)
 =====
 

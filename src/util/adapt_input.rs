@@ -62,7 +62,8 @@ where
                 //
                 let mut buf_reader = BufReader::new(gzd);
                 let reader: &mut dyn BufRead = &mut buf_reader;
-                return f(reader, path_s, line_num);
+                return f(reader, path_s, line_num)
+                    .with_context(|| format!("Failed to read from '{}'", path_s));
             } else if buffer[0] == 0xfd
                 && buffer[1] == 0x37
                 && buffer[2] == 0x7A
@@ -77,7 +78,8 @@ where
                     //
                     let mut buf_reader = BufReader::new(xzd);
                     let reader: &mut dyn BufRead = &mut buf_reader;
-                    return f(reader, path_s, line_num);
+                    return f(reader, path_s, line_num)
+                        .with_context(|| format!("Failed to read from '{}'", path_s));
                 }
             } else if buffer[0] == 0x28
                 && buffer[1] == 0xb5
@@ -93,7 +95,8 @@ where
                     //
                     let mut buf_reader = BufReader::new(zsd);
                     let reader: &mut dyn BufRead = &mut buf_reader;
-                    return f(reader, path_s, line_num);
+                    return f(reader, path_s, line_num)
+                        .with_context(|| format!("Failed to read from '{}'", path_s));
                 }
             } else if buffer[0] == 0x04
                 && buffer[1] == 0x22
@@ -109,7 +112,8 @@ where
                     //
                     let mut buf_reader = BufReader::new(lz4);
                     let reader: &mut dyn BufRead = &mut buf_reader;
-                    return f(reader, path_s, line_num);
+                    return f(reader, path_s, line_num)
+                        .with_context(|| format!("Failed to read from '{}'", path_s));
                 }
             } else if buffer[0] == 0x78
                 && (buffer[1] == 0x01
