@@ -1,33 +1,37 @@
-const TARGET_EXE_PATH: &'static str = env!("CARGO_BIN_EXE_aki-xcat");
+const TARGET_EXE_PATH: &'static str = env!(concat!("CARGO_BIN_EXE_", env!("CARGO_PKG_NAME")));
 
 macro_rules! help_msg {
     () => {
         concat!(
             version_msg!(),
             "\n",
-            "Usage:\n",
-            "  aki-xcat [options] [<file>...]\n",
-            "\n",
-            "this is like a cat, zcat, xzcat, zstdcat and lz4cat.\n",
-            "with no <file> or when <file> is -, read standard input.\n",
-            "automatic discovery file type: plain, gz, xz, zst and lz4.\n",
-            "\n",
-            "Options:\n",
-            "  -n, --number          output line number for each lines\n",
-            "  -f, --file-name       output file name for each lines\n",
-            "      --path-name       output path name for each lines\n",
-            "  -p, --pipe-in <num>   read from pipe <num> [unimplemented]\n",
-            "\n",
-            "  -H, --help        display this help and exit\n",
-            "  -V, --version     display version information and exit\n",
-            "  -X <x-options>    x options. try -X help\n",
-            "\n",
-            "Argument:\n",
-            "  <file>         utf-8 encoded text file. A compressed file of it by gzip, xz, zstd, lz4.\n",
-            "\n",
-            "Examples:\n",
-            "  You can simple use. Just arrange the files.\n",
-            "    aki-xcat file1 file2.gz file3.xz file4.zst file5.lz4\n",
+            indoc::indoc!(
+                r#"
+            Usage:
+              aki-xcat [options] [<file>...]
+
+            this is like a cat, zcat, xzcat, zstdcat and lz4cat.
+            with no <file> or when <file> is -, read standard input.
+            automatic discovery file type: plain, gz, xz, zst and lz4.
+
+            Options:
+              -n, --number          output line number for each lines
+              -f, --file-name       output file name for each lines
+                  --path-name       output path name for each lines
+              -p, --pipe-in <num>   read from pipe <num> [unimplemented]
+
+              -H, --help        display this help and exit
+              -V, --version     display version information and exit
+              -X <x-options>    x options. try -X help
+
+            Argument:
+              <file>         utf-8 encoded text file. A compressed file of it by gzip, xz, zstd, lz4.
+
+            Examples:
+              You can simple use. Just arrange the files.
+                aki-xcat file1 file2.gz file3.xz file4.zst file5.lz4
+            "#
+            ),
             "\n"
         )
     };
@@ -99,10 +103,10 @@ macro_rules! fixture_invalid_utf8 {
     };
 }
 
-mod helper;
+//mod helper;
 
 mod test_0 {
-    use crate::helper::exec_target;
+    use exec_target::exec_target;
     //use exec_target::args_from;
     const TARGET_EXE_PATH: &'static str = super::TARGET_EXE_PATH;
     //
@@ -152,7 +156,7 @@ mod test_0 {
 }
 
 mod test_1 {
-    use crate::helper::exec_target_with_in;
+    use exec_target::exec_target_with_in;
     const TARGET_EXE_PATH: &'static str = super::TARGET_EXE_PATH;
 
     //
@@ -173,7 +177,7 @@ mod test_1 {
 }
 
 mod test_2 {
-    use crate::helper::exec_target;
+    use exec_target::exec_target;
     const TARGET_EXE_PATH: &'static str = super::TARGET_EXE_PATH;
     //
     #[test]
@@ -435,7 +439,7 @@ mod test_2 {
 }
 
 mod test_3 {
-    use crate::helper::exec_target;
+    use exec_target::exec_target;
     const TARGET_EXE_PATH: &'static str = super::TARGET_EXE_PATH;
     //
     #[test]
