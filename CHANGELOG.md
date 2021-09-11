@@ -2,6 +2,11 @@ aki-xcat TBD
 ===
 Unreleased changes. Release notes have not yet been written.
 
+0.1.28 (2021-09-11)
+=====
+
+* update crates: flate2(1.0.21)
+
 0.1.27 (2021-09-11)
 =====
 
