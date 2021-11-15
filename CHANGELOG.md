@@ -2,6 +2,11 @@ aki-xcat TBD
 ===
 Unreleased changes. Release notes have not yet been written.
 
+0.1.30 (2021-11-15)
+=====
+
+* add more documents
+
 0.1.29 (2021-11-15)
 =====
 

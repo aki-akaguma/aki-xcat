@@ -39,6 +39,22 @@ Examples:
     aki-xcat file1 file2.gz file3.xz file4.zst file5.lz4
 ```
 
+## Quick install
+
+1. you can install this into cargo bin path:
+
+```
+cargo install aki-xcat
+```
+
+2. you can build debian package:
+
+```
+cargo deb
+```
+
+and install **.deb** into your local repository of debian package.
+
 ## Examples
 
 The input file used in this example looks like this:
