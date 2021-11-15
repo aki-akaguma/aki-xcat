@@ -1,59 +1,43 @@
 # aki-xcat
 
-*aki-xcat* is the program that concatenate files that are plain, gzip ... etc.
+concatenate files that are plain, gzip, xz and zstd.
 
 ## Features
 
-*aki-xcat*  concatenate files that are plain, gzip ... etc.
+- concatenate files that are plain, gzip ... etc.
+- input files are decompressed by auto.
+- minimum support rustc 1.51.0 (2fd73fabe 2021-03-23)
 
-* command help
+## Command help
 
-```text
+```
 aki-xcat --help
 ```
 
 ```
-//! Usage:
-//!   aki-xcat [options] [<file>...]
-//! 
-//! this is like a cat, zcat, xzcat, zstdcat and lz4cat.
-//! with no <file> or when <file> is -, read standard input.
-//! automatic discovery file type: plain, gz, xz, zst and lz4.
-//! 
-//! Options:
-//!   -n, --number          output line number for each lines
-//!   -f, --file-name       output file name for each lines
-//!       --path-name       output path name for each lines
-//!   -p, --pipe-in <num>   read from pipe <num> [unimplemented]
-//! 
-//!   -H, --help        display this help and exit
-//!   -V, --version     display version information and exit
-//! 
-//! Argument:
-//!   <file>         utf-8 encoded text file. A compressed file of it by gzip, xz, zstd, lz4.
-//! 
-//! Examples:
-//!   You can simple use. Just arrange the files.
-//!     aki-xcat file1 file2.gz file3.xz file4.zst file5.lz4
+Usage:
+  aki-xcat [options] [<file>...]
+
+this is like a cat, zcat, xzcat, zstdcat and lz4cat.
+with no <file> or when <file> is -, read standard input.
+automatic discovery file type: plain, gz, xz, zst and lz4.
+
+Options:
+  -n, --number          output line number for each lines
+  -f, --file-name       output file name for each lines
+      --path-name       output path name for each lines
+  -p, --pipe-in <num>   read from pipe <num> [unimplemented]
+
+  -H, --help        display this help and exit
+  -V, --version     display version information and exit
+
+Argument:
+  <file>         utf-8 encoded text file. A compressed file of it by gzip, xz, zstd, lz4.
+
+Examples:
+  You can simple use. Just arrange the files.
+    aki-xcat file1 file2.gz file3.xz file4.zst file5.lz4
 ```
-
-* minimum support rustc 1.38.0
-
-## Quick install
-
-1. you can install this into cargo bin path:
-
-```
-cargo install aki-xcat
-```
-
-2. you can build debian package:
-
-```
-cargo deb
-```
-
-and install **.deb** into your local repository of debian package.
 
 ## Examples
 
@@ -146,6 +130,18 @@ See [`fn execute()`] for this library examples.
 
 [`fn execute()`]: crate::execute
 
-## Changelogs
+
+# Changelogs
 
 [This crate's changelog here.](https://github.com/aki-akaguma/aki-xcat/blob/main/CHANGELOG.md)
+
+# License
+
+This project is licensed under either of
+
+ * Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or
+   https://www.apache.org/licenses/LICENSE-2.0)
+ * MIT license ([LICENSE-MIT](LICENSE-MIT) or
+   https://opensource.org/licenses/MIT)
+
+at your option.
