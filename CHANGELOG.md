@@ -2,6 +2,11 @@ aki-xcat TBD
 ===
 Unreleased changes. Release notes have not yet been written.
 
+0.1.32 (2022-05-22)
+=====
+
+* update depends: zstd(0.11.2+zstd.1.5.2)
+
 0.1.31 (2022-05-22)
 =====
 
