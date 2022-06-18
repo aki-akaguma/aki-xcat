@@ -2,6 +2,11 @@ TBD: aki-xcat
 ===
 Unreleased changes. Release notes have not yet been written.
 
+0.1.34 (2022-06-18)
+=====
+
+* fix git log
+
 0.1.33 (2022-06-18)
 =====
 
