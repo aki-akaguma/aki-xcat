@@ -11,12 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 * reformat `CHANGELOG.md`
-* update depends: flood-tide-gen(0.1.17)
-* update depends: anyhow(1.0.62), libc(0.2.132), regex(1.6.0)
-* update depends: semver(1.0.13)
+* update depends: anyhow(1.0.68)
+* update depends: flood-tide(0.2.8), flood-tide-gen(0.1.19)
+* update depends: memx-cdy(0.1.10), runnel(0.3.15)
+* update depends: flate2(1.0.25), lz4(1.24.0), xz2(0.1.7)
+* update depends: zstd(0.12.1+zstd.1.5.2)
 
 ### Fixed
-* fix clippy: you are deriving `PartialEq` and can implement `Eq`
+* clippy: you are deriving `PartialEq` and can implement `Eq`
 
 
 ## [0.1.34] (2022-06-18)
