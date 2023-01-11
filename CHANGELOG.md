@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 * clippy: you are deriving `PartialEq` and can implement `Eq`
+* clippy: uninlined_format_args, seek_to_start_instead_of_rewind
 
 
 ## [0.1.34] (2022-06-18)

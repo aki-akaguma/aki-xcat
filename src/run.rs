@@ -30,7 +30,7 @@ fn run_0(sioe: &RunnelIoe, conf: &CmdOptConf) -> anyhow::Result<()> {
                     //let _line_len: usize = line_ss.len();
                     sioe.pout()
                         .lock()
-                        .write_fmt(format_args!("{}\n", line_ss))?;
+                        .write_fmt(format_args!("{line_ss}\n"))?;
                 }
             } else {
                 let mut curr_line_num: usize = 0;
@@ -52,29 +52,29 @@ fn run_0(sioe: &RunnelIoe, conf: &CmdOptConf) -> anyhow::Result<()> {
                         if conf.flg_path_name {
                             if conf.flg_number {
                                 curr_line_num += 1;
-                                format!("\"{}\"{:>6}", path_s, curr_line_num)
+                                format!("\"{path_s}\"{curr_line_num:>6}")
                             } else {
-                                format!("\"{}\"", path_s)
+                                format!("\"{path_s}\"")
                             }
                         } else if conf.flg_file_name {
                             if conf.flg_number {
                                 curr_line_num += 1;
-                                format!("\"{}\"{:>6}", file_nm, curr_line_num)
+                                format!("\"{file_nm}\"{curr_line_num:>6}")
                             } else {
-                                format!("\"{}\"", file_nm)
+                                format!("\"{file_nm}\"")
                             }
                         } else {
                             String::new()
                         }
                     } else if conf.flg_number {
                         all_line_num += 1;
-                        format!("{:>6}", all_line_num)
+                        format!("{all_line_num:>6}")
                     } else {
                         String::new()
                     };
                     sioe.pout()
                         .lock()
-                        .write_fmt(format_args!("{}\t{}\n", fmt_left, line_ss))?;
+                        .write_fmt(format_args!("{fmt_left}\t{line_ss}\n"))?;
                 }
             }
             Ok(all_line_num)

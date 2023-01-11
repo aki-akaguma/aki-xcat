@@ -19,7 +19,7 @@ use lz4::Decoder as Lz4Decoder;
 use anyhow::Context;
 use runnel::RunnelIoe;
 use std::fs::File;
-use std::io::{BufRead, BufReader, Read, Seek, SeekFrom};
+use std::io::{BufRead, BufReader, Read, Seek};
 
 pub fn adapt_input<F>(sioe: &RunnelIoe, files: &[String], mut f: F) -> anyhow::Result<()>
 where
@@ -44,14 +44,14 @@ fn do_cat_proc_file<F>(path_s: &str, line_num: usize, f: &mut F) -> anyhow::Resu
 where
     F: FnMut(&mut dyn BufRead, &str, usize) -> anyhow::Result<usize>,
 {
-    let mut file = File::open(path_s).with_context(|| format!("can not open file: {}", path_s))?;
+    let mut file = File::open(path_s).with_context(|| format!("can not open file: {path_s}"))?;
     //
     let mut buffer = [0; 4];
     match file.read(&mut buffer[..]) {
         Ok(sz) if sz >= 4 => {
             if buffer[0] == 0x1f && buffer[1] == 0x8b {
                 // gzip file, at signature found
-                file.seek(SeekFrom::Start(0))?;
+                file.rewind()?;
                 //
                 #[cfg(feature = "flate2")]
                 let gzd = GzDecoder::new(file);
@@ -63,7 +63,7 @@ where
                 let mut buf_reader = BufReader::new(gzd);
                 let reader: &mut dyn BufRead = &mut buf_reader;
                 return f(reader, path_s, line_num)
-                    .with_context(|| format!("Failed to read from '{}'", path_s));
+                    .with_context(|| format!("Failed to read from '{path_s}'"));
             } else if buffer[0] == 0xfd
                 && buffer[1] == 0x37
                 && buffer[2] == 0x7A
@@ -72,14 +72,14 @@ where
                 #[cfg(feature = "xz2")]
                 {
                     // xz file, at signature found
-                    file.seek(SeekFrom::Start(0))?;
+                    file.rewind()?;
                     //
                     let xzd = XzDecoder::new(file);
                     //
                     let mut buf_reader = BufReader::new(xzd);
                     let reader: &mut dyn BufRead = &mut buf_reader;
                     return f(reader, path_s, line_num)
-                        .with_context(|| format!("Failed to read from '{}'", path_s));
+                        .with_context(|| format!("Failed to read from '{path_s}'"));
                 }
             } else if buffer[0] == 0x28
                 && buffer[1] == 0xb5
@@ -89,14 +89,14 @@ where
                 #[cfg(feature = "zstd")]
                 {
                     // zstd file, at signature found
-                    file.seek(SeekFrom::Start(0))?;
+                    file.rewind()?;
                     //
                     let zsd = ZstdDecoder::new(file)?;
                     //
                     let mut buf_reader = BufReader::new(zsd);
                     let reader: &mut dyn BufRead = &mut buf_reader;
                     return f(reader, path_s, line_num)
-                        .with_context(|| format!("Failed to read from '{}'", path_s));
+                        .with_context(|| format!("Failed to read from '{path_s}'"));
                 }
             } else if buffer[0] == 0x04
                 && buffer[1] == 0x22
@@ -106,14 +106,14 @@ where
                 #[cfg(feature = "lz4")]
                 {
                     // lz4 file, at signature found
-                    file.seek(SeekFrom::Start(0))?;
+                    file.rewind()?;
                     //
                     let lz4 = Lz4Decoder::new(file)?;
                     //
                     let mut buf_reader = BufReader::new(lz4);
                     let reader: &mut dyn BufRead = &mut buf_reader;
                     return f(reader, path_s, line_num)
-                        .with_context(|| format!("Failed to read from '{}'", path_s));
+                        .with_context(|| format!("Failed to read from '{path_s}'"));
                 }
             } else if buffer[0] == 0x78
                 && (buffer[1] == 0x01
@@ -133,10 +133,10 @@ where
         _ => {}
     };
     // plain file
-    file.seek(SeekFrom::Start(0))?;
+    file.rewind()?;
     let mut buf_reader = BufReader::new(file);
     let reader: &mut dyn BufRead = &mut buf_reader;
-    f(reader, path_s, line_num).with_context(|| format!("Failed to read from '{}'", path_s))
+    f(reader, path_s, line_num).with_context(|| format!("Failed to read from '{path_s}'"))
 }
 /*
  * reference:
