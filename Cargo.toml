@@ -1,6 +1,6 @@
 [package]
 name = "aki-xcat"
-version = "0.1.34"
+version = "0.1.35"
 authors = ["aki <aki.akaguma@hotmail.com>"]
 description = """
 concatenate files that are plain, gzip, xz and zstd.
@@ -11,6 +11,7 @@ license = "MIT OR Apache-2.0"
 readme = "README.md"
 build = "build.rs"
 edition = "2021"
+rust-version = "1.56.0"
 repository = "https://github.com/aki-akaguma/aki-xcat"
 
 [lib]

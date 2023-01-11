@@ -5,9 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] *
+## [Unreleased]
+
+
+## [0.1.35] (2023-01-11)
 ### Added
 * badges into `README.tpl`
+* rust-version = "1.56.0" into Cargo.toml
 
 ### Changed
 * reformat `CHANGELOG.md`
@@ -20,7 +24,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 * clippy: you are deriving `PartialEq` and can implement `Eq`
 * clippy: uninlined_format_args, seek_to_start_instead_of_rewind
-
 
 ## [0.1.34] (2022-06-18)
 ### Fixed
@@ -256,7 +259,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 0.1.0 (2017-12-16)
 * first commit
 
-[Unreleased]: https://github.com/aki-akaguma/aki-xcat/compare/v0.1.34..HEAD
+[Unreleased]: https://github.com/aki-akaguma/aki-xcat/compare/v0.1.35..HEAD
+[0.1.35]: https://github.com/aki-akaguma/aki-xcat/compare/v0.1.34..v0.1.35
 [0.1.34]: https://github.com/aki-akaguma/aki-xcat/compare/v0.1.33..v0.1.34
 [0.1.33]: https://github.com/aki-akaguma/aki-xcat/compare/v0.1.32..v0.1.33
 [0.1.32]: https://github.com/aki-akaguma/aki-xcat/compare/v0.1.31..v0.1.32
