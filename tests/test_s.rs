@@ -111,7 +111,9 @@ macro_rules! do_execute {
     ($args:expr, $sin:expr) => {{
         let sioe = RunnelIoe::new(
             Box::new(StringIn::with_str($sin)),
+            #[allow(clippy::box_default)]
             Box::new(StringOut::default()),
+            #[allow(clippy::box_default)]
             Box::new(StringErr::default()),
         );
         let program = env!("CARGO_PKG_NAME");
@@ -147,28 +149,28 @@ mod test_0 {
         let (r, sioe) = do_execute!(&["-H"]);
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), help_msg!());
-        assert_eq!(r.is_ok(), true);
+        assert!(r.is_ok());
     }
     #[test]
     fn test_help_long() {
         let (r, sioe) = do_execute!(&["--help"]);
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), help_msg!());
-        assert_eq!(r.is_ok(), true);
+        assert!(r.is_ok());
     }
     #[test]
     fn test_version() {
         let (r, sioe) = do_execute!(&["-V"]);
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), version_msg!());
-        assert_eq!(r.is_ok(), true);
+        assert!(r.is_ok());
     }
     #[test]
     fn test_version_long() {
         let (r, sioe) = do_execute!(&["--version"]);
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), version_msg!());
-        assert_eq!(r.is_ok(), true);
+        assert!(r.is_ok());
     }
     #[test]
     fn test_invalid_opt() {
@@ -183,7 +185,7 @@ mod test_0 {
             )
         );
         assert_eq!(buff!(sioe, sout), "");
-        assert_eq!(r.is_err(), true);
+        assert!(r.is_err());
     }
 }
 
@@ -198,14 +200,14 @@ mod test_1 {
         let (r, sioe) = do_execute!(&[] as &[&str], "abcdefg\n");
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), "abcdefg\n");
-        assert_eq!(r.is_ok(), true);
+        assert!(r.is_ok());
     }
     #[test]
     fn test_stdin() {
         let (r, sioe) = do_execute!(&["--", "-"], "abcdefg\n");
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), "abcdefg\n");
-        assert_eq!(r.is_ok(), true);
+        assert!(r.is_ok());
     }
 }
 
@@ -220,7 +222,7 @@ mod test_2 {
         let (r, sioe) = do_execute!(&[fixture_plain!()], "");
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), "abcdefg\nhijklmn\n");
-        assert_eq!(r.is_ok(), true);
+        assert!(r.is_ok());
     }
     //
     #[test]
@@ -228,7 +230,7 @@ mod test_2 {
         let (r, sioe) = do_execute!(&[fixture_gz!()], "");
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), "ABCDEFG\nHIJKLMN\n");
-        assert_eq!(r.is_ok(), true);
+        assert!(r.is_ok());
     }
     //
     #[cfg(feature = "xz2")]
@@ -237,7 +239,7 @@ mod test_2 {
         let (r, sioe) = do_execute!(&[fixture_xz!()], "");
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), "ABCDEFG\nHIJKLMN\n");
-        assert_eq!(r.is_ok(), true);
+        assert!(r.is_ok());
     }
     //
     #[cfg(feature = "zstd")]
@@ -246,7 +248,7 @@ mod test_2 {
         let (r, sioe) = do_execute!(&[fixture_zstd!()], "");
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), "ABCDEFG\nHIJKLMN\n");
-        assert_eq!(r.is_ok(), true);
+        assert!(r.is_ok());
     }
     //
     #[cfg(feature = "lz4")]
@@ -255,7 +257,7 @@ mod test_2 {
         let (r, sioe) = do_execute!(&[fixture_lz4!()], "");
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), "ABCDEFG\nHIJKLMN\n");
-        assert_eq!(r.is_ok(), true);
+        assert!(r.is_ok());
     }
     //
     #[cfg(feature = "xz2")]
@@ -284,7 +286,7 @@ mod test_2 {
                 "ABCDEFG\nHIJKLMN\n",
             )
         );
-        assert_eq!(r.is_ok(), true);
+        assert!(r.is_ok());
     }
     //
     #[cfg(feature = "xz2")]
@@ -319,7 +321,7 @@ mod test_2 {
                 "    10\tHIJKLMN\n",
             )
         );
-        assert_eq!(r.is_ok(), true);
+        assert!(r.is_ok());
     }
     //
     #[cfg(feature = "xz2")]
@@ -355,7 +357,7 @@ mod test_2 {
                 "\"lz4text.txt.lz4\"     2\tHIJKLMN\n",
             )
         );
-        assert_eq!(r.is_ok(), true);
+        assert!(r.is_ok());
     }
     //
     #[cfg(feature = "xz2")]
@@ -391,7 +393,7 @@ mod test_2 {
                 "\"fixtures/lz4text.txt.lz4\"     2\tHIJKLMN\n",
             )
         );
-        assert_eq!(r.is_ok(), true);
+        assert!(r.is_ok());
     }
     //
     #[test]
@@ -407,7 +409,7 @@ mod test_2 {
             )
         );
         assert_eq!(buff!(sioe, sout), "");
-        assert_eq!(r.is_ok(), false);
+        assert!(r.is_err());
     }
     //
     #[test]
@@ -423,7 +425,7 @@ mod test_2 {
             )
         );
         assert_eq!(buff!(sioe, sout), "");
-        assert_eq!(r.is_ok(), false);
+        assert!(r.is_err());
     }
     //
     #[test]
@@ -439,7 +441,7 @@ mod test_2 {
             )
         );
         assert_eq!(buff!(sioe, sout), "");
-        assert_eq!(r.is_ok(), false);
+        assert!(r.is_err());
     }
     //
     #[test]
@@ -455,7 +457,7 @@ mod test_2 {
             )
         );
         assert_eq!(buff!(sioe, sout), "");
-        assert_eq!(r.is_ok(), false);
+        assert!(r.is_err());
     }
     //
     #[test]
@@ -471,7 +473,7 @@ mod test_2 {
             )
         );
         assert_eq!(buff!(sioe, sout), "");
-        assert_eq!(r.is_ok(), false);
+        assert!(r.is_err());
     }
 }
 

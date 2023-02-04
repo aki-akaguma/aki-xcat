@@ -1,4 +1,4 @@
-const TARGET_EXE_PATH: &'static str = env!(concat!("CARGO_BIN_EXE_", env!("CARGO_PKG_NAME")));
+const TARGET_EXE_PATH: &str = env!(concat!("CARGO_BIN_EXE_", env!("CARGO_PKG_NAME")));
 
 macro_rules! help_msg {
     () => {
@@ -108,39 +108,39 @@ macro_rules! fixture_invalid_utf8 {
 mod test_0 {
     use exec_target::exec_target;
     //use exec_target::args_from;
-    const TARGET_EXE_PATH: &'static str = super::TARGET_EXE_PATH;
+    const TARGET_EXE_PATH: &str = super::TARGET_EXE_PATH;
     //
     #[test]
     fn test_help() {
-        let oup = exec_target(TARGET_EXE_PATH, &["-H"]);
+        let oup = exec_target(TARGET_EXE_PATH, ["-H"]);
         assert_eq!(oup.stderr, "");
         assert_eq!(oup.stdout, help_msg!());
-        assert_eq!(oup.status.success(), true);
+        assert!(oup.status.success());
     }
     #[test]
     fn test_help_long() {
-        let oup = exec_target(TARGET_EXE_PATH, &["--help"]);
+        let oup = exec_target(TARGET_EXE_PATH, ["--help"]);
         assert_eq!(oup.stderr, "");
         assert_eq!(oup.stdout, help_msg!());
-        assert_eq!(oup.status.success(), true);
+        assert!(oup.status.success());
     }
     #[test]
     fn test_version() {
-        let oup = exec_target(TARGET_EXE_PATH, &["-V"]);
+        let oup = exec_target(TARGET_EXE_PATH, ["-V"]);
         assert_eq!(oup.stderr, "");
         assert_eq!(oup.stdout, version_msg!());
-        assert_eq!(oup.status.success(), true);
+        assert!(oup.status.success());
     }
     #[test]
     fn test_version_long() {
-        let oup = exec_target(TARGET_EXE_PATH, &["--version"]);
+        let oup = exec_target(TARGET_EXE_PATH, ["--version"]);
         assert_eq!(oup.stderr, "");
         assert_eq!(oup.stdout, version_msg!());
-        assert_eq!(oup.status.success(), true);
+        assert!(oup.status.success());
     }
     #[test]
     fn test_invalid_opt() {
-        let oup = exec_target(TARGET_EXE_PATH, &["-z"]);
+        let oup = exec_target(TARGET_EXE_PATH, ["-z"]);
         assert_eq!(
             oup.stderr,
             concat!(
@@ -151,13 +151,13 @@ mod test_0 {
             )
         );
         assert_eq!(oup.stdout, "");
-        assert_eq!(oup.status.success(), false);
+        assert!(!oup.status.success());
     }
 }
 
 mod test_1 {
     use exec_target::exec_target_with_in;
-    const TARGET_EXE_PATH: &'static str = super::TARGET_EXE_PATH;
+    const TARGET_EXE_PATH: &str = super::TARGET_EXE_PATH;
 
     //
     #[test]
@@ -165,60 +165,60 @@ mod test_1 {
         let oup = exec_target_with_in(TARGET_EXE_PATH, &[] as &[&str], b"abcdefg\n" as &[u8]);
         assert_eq!(oup.stderr, "");
         assert_eq!(oup.stdout, "abcdefg\n");
-        assert_eq!(oup.status.success(), true);
+        assert!(oup.status.success());
     }
     #[test]
     fn test_stdin() {
-        let oup = exec_target_with_in(TARGET_EXE_PATH, &["--", "-"], b"abcdefg\n" as &[u8]);
+        let oup = exec_target_with_in(TARGET_EXE_PATH, ["--", "-"], b"abcdefg\n" as &[u8]);
         assert_eq!(oup.stderr, "");
         assert_eq!(oup.stdout, "abcdefg\n");
-        assert_eq!(oup.status.success(), true);
+        assert!(oup.status.success());
     }
 }
 
 mod test_2 {
     use exec_target::exec_target;
-    const TARGET_EXE_PATH: &'static str = super::TARGET_EXE_PATH;
+    const TARGET_EXE_PATH: &str = super::TARGET_EXE_PATH;
     //
     #[test]
     fn test_plain() {
-        let oup = exec_target(TARGET_EXE_PATH, &[fixture_plain!()]);
+        let oup = exec_target(TARGET_EXE_PATH, [fixture_plain!()]);
         assert_eq!(oup.stderr, "");
         assert_eq!(oup.stdout, "abcdefg\nhijklmn\n");
-        assert_eq!(oup.status.success(), true);
+        assert!(oup.status.success());
     }
     //
     #[test]
     fn test_gz() {
-        let oup = exec_target(TARGET_EXE_PATH, &[fixture_gz!()]);
+        let oup = exec_target(TARGET_EXE_PATH, [fixture_gz!()]);
         assert_eq!(oup.stderr, "");
         assert_eq!(oup.stdout, "ABCDEFG\nHIJKLMN\n");
-        assert_eq!(oup.status.success(), true);
+        assert!(oup.status.success());
     }
     //
     #[cfg(feature = "xz2")]
     #[test]
     fn test_xz() {
-        let oup = exec_target(TARGET_EXE_PATH, &[fixture_xz!()]);
+        let oup = exec_target(TARGET_EXE_PATH, [fixture_xz!()]);
         assert_eq!(oup.stderr, "");
         assert_eq!(oup.stdout, "ABCDEFG\nHIJKLMN\n");
-        assert_eq!(oup.status.success(), true);
+        assert!(oup.status.success());
     }
     #[cfg(feature = "zstd")]
     #[test]
     fn test_zstd() {
-        let oup = exec_target(TARGET_EXE_PATH, &[fixture_zstd!()]);
+        let oup = exec_target(TARGET_EXE_PATH, [fixture_zstd!()]);
         assert_eq!(oup.stderr, "");
         assert_eq!(oup.stdout, "ABCDEFG\nHIJKLMN\n");
-        assert_eq!(oup.status.success(), true);
+        assert!(oup.status.success());
     }
     #[cfg(feature = "lz4")]
     #[test]
     fn test_lz4() {
-        let oup = exec_target(TARGET_EXE_PATH, &[fixture_lz4!()]);
+        let oup = exec_target(TARGET_EXE_PATH, [fixture_lz4!()]);
         assert_eq!(oup.stderr, "");
         assert_eq!(oup.stdout, "ABCDEFG\nHIJKLMN\n");
-        assert_eq!(oup.status.success(), true);
+        assert!(oup.status.success());
     }
     //
     #[cfg(feature = "xz2")]
@@ -228,7 +228,7 @@ mod test_2 {
     fn test_plain_gz_xz_zst_lz4() {
         let oup = exec_target(
             TARGET_EXE_PATH,
-            &[
+            [
                 fixture_plain!(),
                 fixture_gz!(),
                 fixture_xz!(),
@@ -247,7 +247,7 @@ mod test_2 {
                 "ABCDEFG\nHIJKLMN\n",
             )
         );
-        assert_eq!(oup.status.success(), true);
+        assert!(oup.status.success());
     }
     //
     #[cfg(feature = "xz2")]
@@ -257,7 +257,7 @@ mod test_2 {
     fn test_plain_gz_xz_zst_lz4_num() {
         let oup = exec_target(
             TARGET_EXE_PATH,
-            &[
+            [
                 "-n",
                 fixture_plain!(),
                 fixture_gz!(),
@@ -282,7 +282,7 @@ mod test_2 {
                 "    10\tHIJKLMN\n",
             )
         );
-        assert_eq!(oup.status.success(), true);
+        assert!(oup.status.success());
     }
     //
     #[cfg(feature = "xz2")]
@@ -292,7 +292,7 @@ mod test_2 {
     fn test_plain_gz_xz_zst_lz4_fnm_num() {
         let oup = exec_target(
             TARGET_EXE_PATH,
-            &[
+            [
                 "-n",
                 "-f",
                 fixture_plain!(),
@@ -318,7 +318,7 @@ mod test_2 {
                 "\"lz4text.txt.lz4\"     2\tHIJKLMN\n",
             )
         );
-        assert_eq!(oup.status.success(), true);
+        assert!(oup.status.success());
     }
     //
     #[cfg(feature = "xz2")]
@@ -328,7 +328,7 @@ mod test_2 {
     fn test_plain_gz_xz_zst_lz4_pnm_num() {
         let oup = exec_target(
             TARGET_EXE_PATH,
-            &[
+            [
                 "-n",
                 "--path-name",
                 fixture_plain!(),
@@ -354,12 +354,12 @@ mod test_2 {
                 "\"fixtures/lz4text.txt.lz4\"     2\tHIJKLMN\n",
             )
         );
-        assert_eq!(oup.status.success(), true);
+        assert!(oup.status.success());
     }
     //
     #[test]
     fn test_invalid_utf8() {
-        let oup = exec_target(TARGET_EXE_PATH, &[fixture_invalid_utf8!()]);
+        let oup = exec_target(TARGET_EXE_PATH, [fixture_invalid_utf8!()]);
         assert_eq!(
             oup.stderr,
             concat!(
@@ -370,12 +370,12 @@ mod test_2 {
             )
         );
         assert_eq!(oup.stdout, "");
-        assert_eq!(oup.status.success(), false);
+        assert!(!oup.status.success());
     }
     //
     #[test]
     fn test_invalid_utf8_gz() {
-        let oup = exec_target(TARGET_EXE_PATH, &[fixture_invalid_utf8!(gz)]);
+        let oup = exec_target(TARGET_EXE_PATH, [fixture_invalid_utf8!(gz)]);
         assert_eq!(
             oup.stderr,
             concat!(
@@ -386,12 +386,12 @@ mod test_2 {
             )
         );
         assert_eq!(oup.stdout, "");
-        assert_eq!(oup.status.success(), false);
+        assert!(!oup.status.success());
     }
     //
     #[test]
     fn test_invalid_utf8_lz4() {
-        let oup = exec_target(TARGET_EXE_PATH, &[fixture_invalid_utf8!(lz4)]);
+        let oup = exec_target(TARGET_EXE_PATH, [fixture_invalid_utf8!(lz4)]);
         assert_eq!(
             oup.stderr,
             concat!(
@@ -402,12 +402,12 @@ mod test_2 {
             )
         );
         assert_eq!(oup.stdout, "");
-        assert_eq!(oup.status.success(), false);
+        assert!(!oup.status.success());
     }
     //
     #[test]
     fn test_invalid_utf8_xz() {
-        let oup = exec_target(TARGET_EXE_PATH, &[fixture_invalid_utf8!(xz)]);
+        let oup = exec_target(TARGET_EXE_PATH, [fixture_invalid_utf8!(xz)]);
         assert_eq!(
             oup.stderr,
             concat!(
@@ -418,12 +418,12 @@ mod test_2 {
             )
         );
         assert_eq!(oup.stdout, "");
-        assert_eq!(oup.status.success(), false);
+        assert!(!oup.status.success());
     }
     //
     #[test]
     fn test_invalid_utf8_zstd() {
-        let oup = exec_target(TARGET_EXE_PATH, &[fixture_invalid_utf8!(zstd)]);
+        let oup = exec_target(TARGET_EXE_PATH, [fixture_invalid_utf8!(zstd)]);
         assert_eq!(
             oup.stderr,
             concat!(
@@ -434,13 +434,13 @@ mod test_2 {
             )
         );
         assert_eq!(oup.stdout, "");
-        assert_eq!(oup.status.success(), false);
+        assert!(!oup.status.success());
     }
 }
 
 mod test_3 {
     use exec_target::exec_target;
-    const TARGET_EXE_PATH: &'static str = super::TARGET_EXE_PATH;
+    const TARGET_EXE_PATH: &str = super::TARGET_EXE_PATH;
     //
     #[test]
     fn test_output_broken_pipe() {
@@ -449,9 +449,9 @@ mod test_3 {
             TARGET_EXE_PATH,
             fixture_text10k!()
         );
-        let oup = exec_target("sh", &["-c", &cmdstr]);
+        let oup = exec_target("sh", ["-c", &cmdstr]);
         assert_eq!(oup.stderr, "");
         assert_eq!(oup.stdout, "ABCDEFG\nHIJKLMN\n");
-        assert_eq!(oup.status.success(), true);
+        assert!(oup.status.success());
     }
 }
