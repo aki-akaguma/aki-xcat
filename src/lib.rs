@@ -5,7 +5,7 @@ concatenate files that are plain, gzip, xz and zstd.
 
 - concatenate files that are plain, gzip ... etc.
 - input files are decompressed by auto.
-- minimum support rustc 1.56.1 (59eed8a2a 2021-11-01)
+- minimum support rustc 1.58.1 (db9d1b20b 2022-01-20)
 
 # Command help
 

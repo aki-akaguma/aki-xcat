@@ -28,9 +28,7 @@ fn run_0(sioe: &RunnelIoe, conf: &CmdOptConf) -> anyhow::Result<()> {
                     let line_s = line?;
                     let line_ss = line_s.as_str();
                     //let _line_len: usize = line_ss.len();
-                    sioe.pout()
-                        .lock()
-                        .write_fmt(format_args!("{line_ss}\n"))?;
+                    sioe.pout().lock().write_fmt(format_args!("{line_ss}\n"))?;
                 }
             } else {
                 let mut curr_line_num: usize = 0;
