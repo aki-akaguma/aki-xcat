@@ -5,7 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] *
+## [Unreleased]
+
+
+## [0.1.36] (2024-06-19)
 ### Added
 * `.github/workflows/test-ubuntu.yml`
 * `.github/workflows/test-macos.yml`
@@ -32,7 +35,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * clippy: `redundant_static_lifetimes`, `needless_borrow`, `bool_assert_comparison`
 * clippy: `uninlined_format_args`, `unused_imports`, `derivable_impls`
 * rust-version: "1.56.0" to "1.65.0"
-
 
 ## [0.1.35] (2023-01-11)
 ### Added
@@ -285,7 +287,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 0.1.0 (2017-12-16)
 * first commit
 
-[Unreleased]: https://github.com/aki-akaguma/aki-xcat/compare/v0.1.35..HEAD
+[Unreleased]: https://github.com/aki-akaguma/aki-xcat/compare/v0.1.36..HEAD
+[0.1.36]: https://github.com/aki-akaguma/aki-xcat/compare/v0.1.35..v0.1.36
 [0.1.35]: https://github.com/aki-akaguma/aki-xcat/compare/v0.1.34..v0.1.35
 [0.1.34]: https://github.com/aki-akaguma/aki-xcat/compare/v0.1.33..v0.1.34
 [0.1.33]: https://github.com/aki-akaguma/aki-xcat/compare/v0.1.32..v0.1.33
