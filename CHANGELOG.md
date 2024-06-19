@@ -20,8 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * refactored `Makefile`
 * update depends: flood-tide(0.2.9), flood-tide-gen(0.1.20)
 * update depends: memx-cdy(0.1.11), runnel(0.3.16)
-* update depends: exec-taget(0.2.8), indoc(2.0.0), rust-version-info-file(0.1.8)
-* update depends: zstd(0.12.3+zstd.1.5.2)
+* update depends: exec-taget(0.2.8), indoc(2.0.5), rust-version-info-file(0.1.8)
+* update depends: libflate(2.1.0), zstd(0.13.1)
 
 ### Removed
 * `COPYING`
@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * license files
 * clippy: `redundant_static_lifetimes`, `needless_borrow`, `bool_assert_comparison`
 * clippy: `uninlined_format_args`, `unused_imports`
-* rust-version: "1.56.0" to "1.60.0"
+* rust-version: "1.56.0" to "1.65.0"
 
 
 ## [0.1.35] (2023-01-11)
