@@ -34,7 +34,7 @@ fn run_0(sioe: &RunnelIoe, conf: &CmdOptConf) -> anyhow::Result<()> {
                     if buf.is_empty() {
                         break;
                     }
-                    sioe.pout().lock().write(buf)?;
+                    sioe.pout().lock().write_all(buf)?;
                     let len = buf.len();
                     reader.consume(len);
                 }
