@@ -501,7 +501,10 @@ mod test_4 {
     fn test_bin_plain() {
         let (r, sioe) = do_execute!(&["-b", fixture_plain!()], "");
         assert_eq!(buff!(sioe, serr), "");
+        #[cfg(not(windows))]
         assert_eq!(buff!(sioe, sout), "abcdefg\nhijklmn\n");
+        #[cfg(windows)]
+        assert_eq!(buff!(sioe, sout), "abcdefg\r\nhijklmn\r\n");
         assert!(r.is_ok());
     }
 }

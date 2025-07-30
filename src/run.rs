@@ -53,7 +53,21 @@ fn run_0(sioe: &RunnelIoe, conf: &CmdOptConf) -> anyhow::Result<()> {
                         break;
                     }
                     let line_ss = String::from_utf8_lossy(&buf);
+                    #[cfg(not(windows))]
                     sioe.pout().lock().write_fmt(format_args!("{line_ss}"))?;
+                    #[cfg(windows)]
+                    {
+                        let line_ss = line_ss.to_string();
+                        let ss = line_ss.as_bytes();
+                        let len = ss.len();
+                        if len >= 2 && ss[len - 2] == b'\r' && ss[len - 1] == b'\n' {
+                            let ss = &ss[..(len - 2)];
+                            let ssss = String::from_utf8_lossy(ss);
+                            sioe.pout().lock().write_fmt(format_args!("{ssss}\n"))?;
+                        } else {
+                            sioe.pout().lock().write_fmt(format_args!("{line_ss}"))?;
+                        }
+                    }
                 }
                 /*
                 // The following code is needed to check UTF8.

@@ -464,7 +464,10 @@ mod test_4 {
     fn test_bin_plain() {
         let oup = exec_target(TARGET_EXE_PATH, ["-b", fixture_plain!()]);
         assert_eq!(oup.stderr, "");
+        #[cfg(not(windows))]
         assert_eq!(oup.stdout, "abcdefg\nhijklmn\n");
+        #[cfg(windows)]
+        assert_eq!(oup.stdout, "abcdefg\r\nhijklmn\r\n");
         assert!(oup.status.success());
     }
 }
