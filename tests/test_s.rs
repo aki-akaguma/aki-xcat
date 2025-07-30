@@ -434,7 +434,7 @@ mod test_2 {
         let (r, sioe) = do_execute!(&[fixture_invalid_utf8!()], "");
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), "���\n");
-        assert!(!r.is_err());
+        assert!(r.is_ok());
     }
     //
     #[test]
@@ -442,7 +442,7 @@ mod test_2 {
         let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(gz)], "");
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), "���\n");
-        assert!(!r.is_err());
+        assert!(r.is_ok());
     }
     //
     #[test]
@@ -450,7 +450,7 @@ mod test_2 {
         let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(lz4)], "");
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), "���\n");
-        assert!(!r.is_err());
+        assert!(r.is_ok());
     }
     //
     #[test]
@@ -458,7 +458,7 @@ mod test_2 {
         let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(xz)], "");
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), "���\n");
-        assert!(!r.is_err());
+        assert!(r.is_ok());
     }
     //
     #[test]
@@ -466,7 +466,7 @@ mod test_2 {
         let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(zstd)], "");
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), "���\n");
-        assert!(!r.is_err());
+        assert!(r.is_ok());
     }
     //
     #[test]
@@ -474,7 +474,7 @@ mod test_2 {
         let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(bzip2)], "");
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), "���\n");
-        assert!(!r.is_err());
+        assert!(r.is_ok());
     }
 }
 
