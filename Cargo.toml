@@ -24,7 +24,7 @@ name = "aki-xcat"
 path = "src/main.rs"
 
 [features]
-default = ["flate2", "xz2", "zstd", "lz4"]
+default = ["flate2", "xz2", "zstd", "lz4", "bzip2"]
 #default = ["libflate"]
 #default = ["inflate"]
 debian_build = []
@@ -41,6 +41,7 @@ inflate = { version = "0.4.5", optional = true }
 xz2 = { version = "0.1", optional = true }
 zstd = { version = "0.13", optional = true }
 lz4 = { version = "1.24", optional = true }
+bzip2 = { version = "0.6", optional = true }
 
 [dev-dependencies]
 indoc = "2.0"

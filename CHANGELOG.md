@@ -6,7 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+* `-b` binary mode and default text mode
+* bzip2 supports
 
+### Changed
+* In text mode, invalid UTF-8 is replaced with U+FFFD without error
 
 ## [0.1.36] (2024-06-19)
 ### Added

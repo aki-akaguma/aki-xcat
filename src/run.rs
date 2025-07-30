@@ -22,7 +22,40 @@ fn run_0(sioe: &RunnelIoe, conf: &CmdOptConf) -> anyhow::Result<()> {
         |reader, path_s, line_num| -> anyhow::Result<usize> {
             let mut all_line_num = line_num;
             //
-            if !conf.flg_number && !conf.flg_file_name && !conf.flg_path_name {
+            if conf.flg_bin {
+                // binary mode
+                loop {
+                    let buf = match reader.fill_buf() {
+                        Ok(buf) => buf,
+                        Err(err) => {
+                            return Err(anyhow!("{}", err));
+                        }
+                    };
+                    if buf.is_empty() {
+                        break;
+                    }
+                    sioe.pout().lock().write(buf)?;
+                    let len = buf.len();
+                    reader.consume(len);
+                }
+            } else if !conf.flg_number && !conf.flg_file_name && !conf.flg_path_name {
+                // text mode
+                let mut buf: Vec<u8> = vec![];
+                loop {
+                    buf.clear();
+                    match reader.read_until(b'\n', &mut buf) {
+                        Ok(_sz) => (),
+                        Err(err) => {
+                            return Err(anyhow!("{}", err));
+                        }
+                    };
+                    if buf.is_empty() {
+                        break;
+                    }
+                    let line_ss = String::from_utf8_lossy(&buf);
+                    sioe.pout().lock().write_fmt(format_args!("{line_ss}"))?;
+                }
+                /*
                 // The following code is needed to check UTF8.
                 for line in reader.lines() {
                     let line_s = line?;
@@ -30,6 +63,7 @@ fn run_0(sioe: &RunnelIoe, conf: &CmdOptConf) -> anyhow::Result<()> {
                     //let _line_len: usize = line_ss.len();
                     sioe.pout().lock().write_fmt(format_args!("{line_ss}\n"))?;
                 }
+                */
             } else {
                 let mut curr_line_num: usize = 0;
                 let file_nm = if conf.flg_file_name {

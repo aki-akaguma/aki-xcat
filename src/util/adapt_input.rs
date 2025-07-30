@@ -16,6 +16,9 @@ use zstd::Decoder as ZstdDecoder;
 #[cfg(feature = "lz4")]
 use lz4::Decoder as Lz4Decoder;
 
+#[cfg(feature = "bzip2")]
+use bzip2::read::BzDecoder as Bzip2Decoder;
+
 use anyhow::Context;
 use runnel::RunnelIoe;
 use std::fs::File;
@@ -111,6 +114,23 @@ where
                     let lz4 = Lz4Decoder::new(file)?;
                     //
                     let mut buf_reader = BufReader::new(lz4);
+                    let reader: &mut dyn BufRead = &mut buf_reader;
+                    return f(reader, path_s, line_num)
+                        .with_context(|| format!("Failed to read from '{path_s}'"));
+                }
+            } else if buffer[0] == 0x42
+                && buffer[1] == 0x5a
+                && buffer[2] == 0x68
+                && buffer[3] == 0x39
+            {
+                #[cfg(feature = "bzip2")]
+                {
+                    // bzip2 file, at signature found
+                    file.rewind()?;
+                    //
+                    let bzip2 = Bzip2Decoder::new(file);
+                    //
+                    let mut buf_reader = BufReader::new(bzip2);
                     let reader: &mut dyn BufRead = &mut buf_reader;
                     return f(reader, path_s, line_num)
                         .with_context(|| format!("Failed to read from '{path_s}'"));

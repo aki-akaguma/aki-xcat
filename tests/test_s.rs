@@ -13,6 +13,7 @@ macro_rules! help_msg {
             automatic discovery file type: plain, gz, xz, zst and lz4.
 
             Options:
+              -b, --bin             binary mode
               -n, --number          output line number for each lines
               -f, --file-name       output file name for each lines
                   --path-name       output path name for each lines
@@ -78,6 +79,11 @@ macro_rules! fixture_lz4 {
         "fixtures/lz4text.txt.lz4"
     };
 }
+macro_rules! fixture_bzip2 {
+    () => {
+        "fixtures/bzip2text.txt.bz2"
+    };
+}
 /*
 macro_rules! fixture_text10k {
     () => {
@@ -100,6 +106,9 @@ macro_rules! fixture_invalid_utf8 {
     };
     (zstd) => {
         "fixtures/invalid_utf8.txt.zst"
+    };
+    (bzip2) => {
+        "fixtures/invalid_utf8.txt.bz2"
     };
 }
 
@@ -260,11 +269,21 @@ mod test_2 {
         assert!(r.is_ok());
     }
     //
+    #[cfg(feature = "bzip2")]
+    #[test]
+    fn test_bzip2() {
+        let (r, sioe) = do_execute!(&[fixture_bzip2!()], "");
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(buff!(sioe, sout), "ABCDEFG\nHIJKLMN\n");
+        assert!(r.is_ok());
+    }
+    //
     #[cfg(feature = "xz2")]
     #[cfg(feature = "zstd")]
     #[cfg(feature = "lz4")]
+    #[cfg(feature = "bzip2")]
     #[test]
-    fn test_plain_gz_xz_zst_lz4() {
+    fn test_plain_gz_xz_zst_lz4_bzip2() {
         let (r, sioe) = do_execute!(
             &[
                 fixture_plain!(),
@@ -272,6 +291,7 @@ mod test_2 {
                 fixture_xz!(),
                 fixture_zstd!(),
                 fixture_lz4!(),
+                fixture_bzip2!(),
             ],
             ""
         );
@@ -284,6 +304,7 @@ mod test_2 {
                 "ABCDEFG\nHIJKLMN\n",
                 "ABCDEFG\nHIJKLMN\n",
                 "ABCDEFG\nHIJKLMN\n",
+                "ABCDEFG\nHIJKLMN\n",
             )
         );
         assert!(r.is_ok());
@@ -292,8 +313,9 @@ mod test_2 {
     #[cfg(feature = "xz2")]
     #[cfg(feature = "zstd")]
     #[cfg(feature = "lz4")]
+    #[cfg(feature = "bzip2")]
     #[test]
-    fn test_plain_gz_xz_zst_lz4_num() {
+    fn test_plain_gz_xz_zst_lz4_bzip2_num() {
         let (r, sioe) = do_execute!(
             &[
                 "-n",
@@ -302,6 +324,7 @@ mod test_2 {
                 fixture_xz!(),
                 fixture_zstd!(),
                 fixture_lz4!(),
+                fixture_bzip2!(),
             ],
             ""
         );
@@ -319,6 +342,8 @@ mod test_2 {
                 "     8\tHIJKLMN\n",
                 "     9\tABCDEFG\n",
                 "    10\tHIJKLMN\n",
+                "    11\tABCDEFG\n",
+                "    12\tHIJKLMN\n",
             )
         );
         assert!(r.is_ok());
@@ -327,8 +352,9 @@ mod test_2 {
     #[cfg(feature = "xz2")]
     #[cfg(feature = "zstd")]
     #[cfg(feature = "lz4")]
+    #[cfg(feature = "bzip2")]
     #[test]
-    fn test_plain_gz_xz_zst_lz4_fnm_num() {
+    fn test_plain_gz_xz_zst_lz4_bzip2_fnm_num() {
         let (r, sioe) = do_execute!(
             &[
                 "-n",
@@ -338,6 +364,7 @@ mod test_2 {
                 fixture_xz!(),
                 fixture_zstd!(),
                 fixture_lz4!(),
+                fixture_bzip2!(),
             ],
             ""
         );
@@ -355,6 +382,8 @@ mod test_2 {
                 "\"zstext.txt.zst\"     2\tHIJKLMN\n",
                 "\"lz4text.txt.lz4\"     1\tABCDEFG\n",
                 "\"lz4text.txt.lz4\"     2\tHIJKLMN\n",
+                "\"bzip2text.txt.bz2\"     1\tABCDEFG\n",
+                "\"bzip2text.txt.bz2\"     2\tHIJKLMN\n",
             )
         );
         assert!(r.is_ok());
@@ -363,8 +392,9 @@ mod test_2 {
     #[cfg(feature = "xz2")]
     #[cfg(feature = "zstd")]
     #[cfg(feature = "lz4")]
+    #[cfg(feature = "bzip2")]
     #[test]
-    fn test_plain_gz_xz_zst_lz4_pnm_num() {
+    fn test_plain_gz_xz_zst_lz4_bzip2_pnm_num() {
         let (r, sioe) = do_execute!(
             &[
                 "-n",
@@ -374,6 +404,7 @@ mod test_2 {
                 fixture_xz!(),
                 fixture_zstd!(),
                 fixture_lz4!(),
+                fixture_bzip2!(),
             ],
             ""
         );
@@ -391,6 +422,8 @@ mod test_2 {
                 "\"fixtures/zstext.txt.zst\"     2\tHIJKLMN\n",
                 "\"fixtures/lz4text.txt.lz4\"     1\tABCDEFG\n",
                 "\"fixtures/lz4text.txt.lz4\"     2\tHIJKLMN\n",
+                "\"fixtures/bzip2text.txt.bz2\"     1\tABCDEFG\n",
+                "\"fixtures/bzip2text.txt.bz2\"     2\tHIJKLMN\n",
             )
         );
         assert!(r.is_ok());
@@ -399,81 +432,49 @@ mod test_2 {
     #[test]
     fn test_invalid_utf8() {
         let (r, sioe) = do_execute!(&[fixture_invalid_utf8!()], "");
-        assert_eq!(
-            buff!(sioe, serr),
-            concat!(
-                program_name!(),
-                ": Failed to read from \'",
-                fixture_invalid_utf8!(),
-                "\': stream did not contain valid UTF-8\n",
-            )
-        );
-        assert_eq!(buff!(sioe, sout), "");
-        assert!(r.is_err());
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(buff!(sioe, sout), "���\n");
+        assert!(!r.is_err());
     }
     //
     #[test]
     fn test_invalid_utf8_gz() {
         let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(gz)], "");
-        assert_eq!(
-            buff!(sioe, serr),
-            concat!(
-                program_name!(),
-                ": Failed to read from \'",
-                fixture_invalid_utf8!(gz),
-                "\': stream did not contain valid UTF-8\n",
-            )
-        );
-        assert_eq!(buff!(sioe, sout), "");
-        assert!(r.is_err());
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(buff!(sioe, sout), "���\n");
+        assert!(!r.is_err());
     }
     //
     #[test]
     fn test_invalid_utf8_lz4() {
         let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(lz4)], "");
-        assert_eq!(
-            buff!(sioe, serr),
-            concat!(
-                program_name!(),
-                ": Failed to read from \'",
-                fixture_invalid_utf8!(lz4),
-                "\': stream did not contain valid UTF-8\n",
-            )
-        );
-        assert_eq!(buff!(sioe, sout), "");
-        assert!(r.is_err());
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(buff!(sioe, sout), "���\n");
+        assert!(!r.is_err());
     }
     //
     #[test]
     fn test_invalid_utf8_xz() {
         let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(xz)], "");
-        assert_eq!(
-            buff!(sioe, serr),
-            concat!(
-                program_name!(),
-                ": Failed to read from \'",
-                fixture_invalid_utf8!(xz),
-                "\': stream did not contain valid UTF-8\n",
-            )
-        );
-        assert_eq!(buff!(sioe, sout), "");
-        assert!(r.is_err());
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(buff!(sioe, sout), "���\n");
+        assert!(!r.is_err());
     }
     //
     #[test]
     fn test_invalid_utf8_zstd() {
         let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(zstd)], "");
-        assert_eq!(
-            buff!(sioe, serr),
-            concat!(
-                program_name!(),
-                ": Failed to read from \'",
-                fixture_invalid_utf8!(zstd),
-                "\': stream did not contain valid UTF-8\n",
-            )
-        );
-        assert_eq!(buff!(sioe, sout), "");
-        assert!(r.is_err());
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(buff!(sioe, sout), "���\n");
+        assert!(!r.is_err());
+    }
+    //
+    #[test]
+    fn test_invalid_utf8_bzip2() {
+        let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(bzip2)], "");
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(buff!(sioe, sout), "���\n");
+        assert!(!r.is_err());
     }
 }
 
@@ -488,4 +489,19 @@ mod test_3 {
     fn test_output_broken_pipe() {
     }
     */
+}
+
+mod test_4 {
+    use libaki_xcat::*;
+    use runnel::medium::stringio::{StringErr, StringIn, StringOut};
+    use runnel::*;
+    use std::io::Write;
+    //
+    #[test]
+    fn test_bin_plain() {
+        let (r, sioe) = do_execute!(&["-b", fixture_plain!()], "");
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(buff!(sioe, sout), "abcdefg\nhijklmn\n");
+        assert!(r.is_ok());
+    }
 }
