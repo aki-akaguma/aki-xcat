@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * update depends: flate2(1.1.2), lz4(1.28.1), zstd(0.13.3)
 * minimum support rustc 1.75.0
 
+### Removed
+* option `--pipe-in`
+
 ## [0.1.36] (2024-06-19)
 ### Added
 * `.github/workflows/test-ubuntu.yml`

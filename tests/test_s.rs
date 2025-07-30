@@ -17,7 +17,6 @@ macro_rules! help_msg {
               -n, --number          output line number for each lines
               -f, --file-name       output file name for each lines
                   --path-name       output path name for each lines
-              -p, --pipe-in <num>   read from pipe <num> [unimplemented]
 
               -H, --help        display this help and exit
               -V, --version     display version information and exit

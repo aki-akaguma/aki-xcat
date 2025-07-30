@@ -4,7 +4,6 @@ const OPTIONS_TEXT: &str = r"Options:
   -n, --number          output line number for each lines
   -f, --file-name       output file name for each lines
       --path-name       output path name for each lines
-  -p, --pipe-in <num>   read from pipe <num> [unimplemented]
 
   -H, --help        display this help and exit
   -V, --version     display version information and exit
@@ -18,7 +17,6 @@ enum CmdOp {
     Number,
     FileName,
     PathName,
-    PipeIn,
     Help,
     Version,
     UcX,
@@ -36,20 +34,19 @@ impl CmdOp {
 }
 
 #[rustfmt::skip]
-const OPT_ARY: [Opt;8] = [
+const OPT_ARY: [Opt;7] = [
     Opt { sho: b'X', lon: "",              has: Arg::Yes, num: CmdOp::UcX.to(), },
     Opt { sho: b'b', lon: "bin",           has: Arg::No,  num: CmdOp::Bin.to(), },
     Opt { sho: b'f', lon: "file-name",     has: Arg::No,  num: CmdOp::FileName.to(), },
     Opt { sho: b'H', lon: "help",          has: Arg::No,  num: CmdOp::Help.to(), },
     Opt { sho: b'n', lon: "number",        has: Arg::No,  num: CmdOp::Number.to(), },
     Opt { sho: 0u8,  lon: "path-name",     has: Arg::No,  num: CmdOp::PathName.to(), },
-    Opt { sho: b'p', lon: "pipe-in",       has: Arg::Yes, num: CmdOp::PipeIn.to(), },
     Opt { sho: b'V', lon: "version",       has: Arg::No,  num: CmdOp::Version.to(), },
 ];
 
 #[rustfmt::skip]
-const OPT_ARY_SHO_IDX: [(u8,usize);7] = [
-(b'H',3),(b'V',7),(b'X',0),(b'b',1),(b'f',2),(b'n',4),(b'p',6),];
+const OPT_ARY_SHO_IDX: [(u8,usize);6] = [
+(b'H',3),(b'V',6),(b'X',0),(b'b',1),(b'f',2),(b'n',4),];
 
 #[derive(Debug, Default, PartialEq, Eq)]
 pub struct CmdOptConf {
@@ -59,7 +56,6 @@ pub struct CmdOptConf {
     pub flg_number: bool,
     pub flg_file_name: bool,
     pub flg_path_name: bool,
-    pub opt_pipe_in: String,
     pub flg_help: bool,
     pub flg_version: bool,
     pub opt_uc_x: Vec<OptUcXParam>,
@@ -73,13 +69,6 @@ impl flood_tide::HelpVersion for CmdOptConf {
     }
     fn is_version(&self) -> bool {
         self.flg_version
-    }
-}
-
-fn value_to_string(nv: &NameVal<'_>) -> Result<String, OptParseError> {
-    match nv.val {
-        Some(x) => Ok(x.to_string()),
-        None => Err(OptParseError::missing_option_argument(&nv.opt.lon_or_sho())),
     }
 }
 
