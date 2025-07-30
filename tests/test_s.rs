@@ -8,9 +8,9 @@ macro_rules! help_msg {
             Usage:
               aki-xcat [options] [<file>...]
 
-            this is like a cat, zcat, xzcat, zstdcat and lz4cat.
+            this is like a cat, zcat, xzcat, zstdcat, lz4cat and bzcat.
             with no <file> or when <file> is -, read standard input.
-            automatic discovery file type: plain, gz, xz, zst and lz4.
+            automatic discovery file type: plain, gz, xz, zst, lz4 and bzip2.
 
             Options:
               -b, --bin             binary mode
@@ -23,11 +23,12 @@ macro_rules! help_msg {
               -X <x-options>    x options. try -X help
 
             Argument:
-              <file>         utf-8 encoded text file. A compressed file of it by gzip, xz, zstd, lz4.
+              <file>         utf-8 encoded text file or binary file.
+                             A compressed file of it by gzip, xz, zstd, lz4, bzip2.
 
             Examples:
               You can simple use. Just arrange the files.
-                aki-xcat file1 file2.gz file3.xz file4.zst file5.lz4
+                aki-xcat file1 file2.gz file3.xz file4.zst file5.lz4 file6.bz2
             "#
             ),
             "\n"

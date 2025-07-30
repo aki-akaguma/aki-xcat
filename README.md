@@ -14,7 +14,7 @@ concatenate files that are plain, gzip, xz and zstd.
 
 - concatenate files that are plain, gzip ... etc.
 - input files are decompressed by auto.
-- minimum support rustc 1.60.0 (7737e0b5c 2022-04-04)
+- minimum support rustc 1.75.0 (82e1608df 2023-12-21)
 
 ## Command help
 
@@ -26,25 +26,26 @@ aki-xcat --help
 Usage:
   aki-xcat [options] [<file>...]
 
-this is like a cat, zcat, xzcat, zstdcat and lz4cat.
+this is like a cat, zcat, xzcat, zstdcat, lz4cat and bzcat.
 with no <file> or when <file> is -, read standard input.
-automatic discovery file type: plain, gz, xz, zst and lz4.
+automatic discovery file type: plain, gz, xz, zst, lz4 and bzip2.
 
 Options:
+  -b, --bin             binary mode
   -n, --number          output line number for each lines
   -f, --file-name       output file name for each lines
       --path-name       output path name for each lines
-  -p, --pipe-in <num>   read from pipe <num> [unimplemented]
 
   -H, --help        display this help and exit
   -V, --version     display version information and exit
 
 Argument:
-  <file>         utf-8 encoded text file. A compressed file of it by gzip, xz, zstd, lz4.
+  <file>         utf-8 encoded text file or binary file.
+                 A compressed file of it by gzip, xz, zstd, lz4, bzip2.
 
 Examples:
   You can simple use. Just arrange the files.
-    aki-xcat file1 file2.gz file3.xz file4.zst file5.lz4
+    aki-xcat file1 file2.gz file3.xz file4.zst file5.lz4 file6.bz2
 ```
 
 ## Quick install
@@ -101,9 +102,9 @@ HIJKLMN
 
 ### Example 2: multi file formats
 
-concatenate plain text file, gzip text file, xz text file, zstd text file and lz4 text file.
+concatenate plain text file, gzip text file, xz text file, zstd text file, lz4 text file and bzip2 text file.
 ```
-aki-xcat fixtures/plain.txt fixtures/gztext.txt.gz fixtures/xztext.txt.xz  fixtures/zstext.txt.zst fixtures/lz4text.txt.lz4
+aki-xcat fixtures/plain.txt fixtures/gztext.txt.gz fixtures/xztext.txt.xz  fixtures/zstext.txt.zst fixtures/lz4text.txt.lz4 fixtures/bzip2text.txt.bz2
 ```
 
 ### Example 3: output all line number
