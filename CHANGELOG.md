@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 * In text mode, invalid UTF-8 is replaced with U+FFFD without error
+* update depends: anyhow(1.0.98), indoc(2.0.6)
+* update depends: flate2(1.1.2), lz4(1.28.1), zstd(0.13.3)
 
 ## [0.1.36] (2024-06-19)
 ### Added
