@@ -1,11 +1,7 @@
+use crate::util::{detect_file_type, FileType};
+
 #[cfg(feature = "flate2")]
 use flate2::read::GzDecoder;
-
-#[cfg(feature = "libflate")]
-use libflate::gzip::Decoder;
-
-#[cfg(feature = "inflate")]
-use inflate::DeflateDecoder;
 
 #[cfg(feature = "xz2")]
 use xz2::read::XzDecoder;
@@ -17,12 +13,12 @@ use zstd::Decoder as ZstdDecoder;
 use lz4::Decoder as Lz4Decoder;
 
 #[cfg(feature = "bzip2")]
-use bzip2::read::BzDecoder as Bzip2Decoder;
+use bzip2::read::BzDecoder;
 
 use anyhow::Context;
 use runnel::RunnelIoe;
 use std::fs::File;
-use std::io::{BufRead, BufReader, Read, Seek};
+use std::io::{BufRead, BufReader};
 
 pub fn adapt_input<F>(sioe: &RunnelIoe, files: &[String], mut f: F) -> anyhow::Result<()>
 where
@@ -30,135 +26,34 @@ where
 {
     let mut line_num: usize = 0;
     if files.is_empty() {
-        let _ = f(&mut sioe.pin().lock(), "", line_num)?;
+        f(&mut sioe.pin().lock(), "", line_num)?;
     } else {
         for path_s in files {
             if path_s == "-" {
                 line_num = f(&mut sioe.pin().lock(), "", line_num)?;
             } else {
-                line_num = do_cat_proc_file(path_s, line_num, &mut f)?;
+                line_num = cat_process_file(path_s, line_num, &mut f)?;
             }
         }
     }
     Ok(())
 }
 
-fn do_cat_proc_file<F>(path_s: &str, line_num: usize, f: &mut F) -> anyhow::Result<usize>
+fn cat_process_file<F>(path_s: &str, line_num: usize, f: &mut F) -> anyhow::Result<usize>
 where
     F: FnMut(&mut dyn BufRead, &str, usize) -> anyhow::Result<usize>,
 {
-    let mut file = File::open(path_s).with_context(|| format!("can not open file: {path_s}"))?;
-    //
-    let mut buffer = [0; 4];
-    match file.read(&mut buffer[..]) {
-        Ok(sz) if sz >= 4 => {
-            if buffer[0] == 0x1f && buffer[1] == 0x8b {
-                // gzip file, at signature found
-                file.rewind()?;
-                //
-                #[cfg(feature = "flate2")]
-                let gzd = GzDecoder::new(file);
-                #[cfg(feature = "libflate")]
-                let gzd = Decoder::new(file)?;
-                #[cfg(feature = "inflate")]
-                let gzd = DeflateDecoder::from_zlib(file);
-                //
-                let mut buf_reader = BufReader::new(gzd);
-                let reader: &mut dyn BufRead = &mut buf_reader;
-                return f(reader, path_s, line_num)
-                    .with_context(|| format!("Failed to read from '{path_s}'"));
-            } else if buffer[0] == 0xfd
-                && buffer[1] == 0x37
-                && buffer[2] == 0x7A
-                && buffer[3] == 0x58
-            {
-                #[cfg(feature = "xz2")]
-                {
-                    // xz file, at signature found
-                    file.rewind()?;
-                    //
-                    let xzd = XzDecoder::new(file);
-                    //
-                    let mut buf_reader = BufReader::new(xzd);
-                    let reader: &mut dyn BufRead = &mut buf_reader;
-                    return f(reader, path_s, line_num)
-                        .with_context(|| format!("Failed to read from '{path_s}'"));
-                }
-            } else if buffer[0] == 0x28
-                && buffer[1] == 0xb5
-                && buffer[2] == 0x2f
-                && buffer[3] == 0xfd
-            {
-                #[cfg(feature = "zstd")]
-                {
-                    // zstd file, at signature found
-                    file.rewind()?;
-                    //
-                    let zsd = ZstdDecoder::new(file)?;
-                    //
-                    let mut buf_reader = BufReader::new(zsd);
-                    let reader: &mut dyn BufRead = &mut buf_reader;
-                    return f(reader, path_s, line_num)
-                        .with_context(|| format!("Failed to read from '{path_s}'"));
-                }
-            } else if buffer[0] == 0x04
-                && buffer[1] == 0x22
-                && buffer[2] == 0x4D
-                && buffer[3] == 0x18
-            {
-                #[cfg(feature = "lz4")]
-                {
-                    // lz4 file, at signature found
-                    file.rewind()?;
-                    //
-                    let lz4 = Lz4Decoder::new(file)?;
-                    //
-                    let mut buf_reader = BufReader::new(lz4);
-                    let reader: &mut dyn BufRead = &mut buf_reader;
-                    return f(reader, path_s, line_num)
-                        .with_context(|| format!("Failed to read from '{path_s}'"));
-                }
-            } else if buffer[0] == 0x42
-                && buffer[1] == 0x5a
-                && buffer[2] == 0x68
-                && buffer[3] == 0x39
-            {
-                #[cfg(feature = "bzip2")]
-                {
-                    // bzip2 file, at signature found
-                    file.rewind()?;
-                    //
-                    let bzip2 = Bzip2Decoder::new(file);
-                    //
-                    let mut buf_reader = BufReader::new(bzip2);
-                    let reader: &mut dyn BufRead = &mut buf_reader;
-                    return f(reader, path_s, line_num)
-                        .with_context(|| format!("Failed to read from '{path_s}'"));
-                }
-            } else if buffer[0] == 0x78
-                && (buffer[1] == 0x01
-                    || buffer[1] == 0x5e
-                    || buffer[1] == 0x9c
-                    || buffer[1] == 0xda
-                    || buffer[1] == 0x20
-                    || buffer[1] == 0x7d
-                    || buffer[1] == 0xbb
-                    || buffer[1] == 0xf9)
-            {
-                // zlib file, at signature found
-                eprintln!("zlib file signature found.");
-                unimplemented!();
-            }
-        }
-        _ => {}
+    let mut file = File::open(path_s).with_context(|| format!("Cannot open file: {path_s}"))?;
+    let file_type = detect_file_type(&mut file)?;
+
+    let mut reader: Box<dyn BufRead> = match file_type {
+        FileType::Gzip => Box::new(BufReader::new(GzDecoder::new(file))),
+        FileType::Xz => Box::new(BufReader::new(XzDecoder::new(file))),
+        FileType::Zstd => Box::new(BufReader::new(ZstdDecoder::new(file)?)),
+        FileType::Lz4 => Box::new(BufReader::new(Lz4Decoder::new(file)?)),
+        FileType::Bzip2 => Box::new(BufReader::new(BzDecoder::new(file))),
+        FileType::Plain => Box::new(BufReader::new(file)),
     };
-    // plain file
-    file.rewind()?;
-    let mut buf_reader = BufReader::new(file);
-    let reader: &mut dyn BufRead = &mut buf_reader;
-    f(reader, path_s, line_num).with_context(|| format!("Failed to read from '{path_s}'"))
+
+    f(&mut reader, path_s, line_num).with_context(|| format!("Failed to read from '{path_s}'"))
 }
-/*
- * reference:
- *      https://en.wikipedia.org/wiki/List_of_file_signatures
-*/

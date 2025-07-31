@@ -1,116 +1,6 @@
-macro_rules! help_msg {
-    () => {
-        concat!(
-            version_msg!(),
-            "\n",
-            indoc::indoc!(
-                r#"
-            Usage:
-              aki-xcat [options] [<file>...]
-
-            this is like a cat, zcat, xzcat, zstdcat, lz4cat and bzcat.
-            with no <file> or when <file> is -, read standard input.
-            automatic discovery file type: plain, gz, xz, zst, lz4 and bzip2.
-
-            Options:
-              -b, --bin             binary mode
-              -n, --number          output line number for each lines
-              -f, --file-name       output file name for each lines
-                  --path-name       output path name for each lines
-
-              -H, --help        display this help and exit
-              -V, --version     display version information and exit
-              -X <x-options>    x options. try -X help
-
-            Argument:
-              <file>         utf-8 encoded text file or binary file.
-                             A compressed file of it by gzip, xz, zstd, lz4, bzip2.
-
-            Examples:
-              You can simple use. Just arrange the files.
-                aki-xcat file1 file2.gz file3.xz file4.zst file5.lz4 file6.bz2
-            "#
-            ),
-            "\n"
-        )
-    };
-}
-
-macro_rules! try_help_msg {
-    () => {
-        "Try --help for help.\n"
-    };
-}
-
-macro_rules! program_name {
-    () => {
-        "aki-xcat"
-    };
-}
-
-macro_rules! version_msg {
-    () => {
-        concat!(program_name!(), " ", env!("CARGO_PKG_VERSION"), "\n")
-    };
-}
-
-macro_rules! fixture_plain {
-    () => {
-        "fixtures/plain.txt"
-    };
-}
-macro_rules! fixture_gz {
-    () => {
-        "fixtures/gztext.txt.gz"
-    };
-}
-macro_rules! fixture_xz {
-    () => {
-        "fixtures/xztext.txt.xz"
-    };
-}
-macro_rules! fixture_zstd {
-    () => {
-        "fixtures/zstext.txt.zst"
-    };
-}
-macro_rules! fixture_lz4 {
-    () => {
-        "fixtures/lz4text.txt.lz4"
-    };
-}
-macro_rules! fixture_bzip2 {
-    () => {
-        "fixtures/bzip2text.txt.bz2"
-    };
-}
-/*
-macro_rules! fixture_text10k {
-    () => {
-        "fixtures/text10k.txt.gz"
-    };
-}
-*/
-macro_rules! fixture_invalid_utf8 {
-    () => {
-        "fixtures/invalid_utf8.txt"
-    };
-    (gz) => {
-        "fixtures/invalid_utf8.txt.gz"
-    };
-    (lz4) => {
-        "fixtures/invalid_utf8.txt.lz4"
-    };
-    (xz) => {
-        "fixtures/invalid_utf8.txt.xz"
-    };
-    (zstd) => {
-        "fixtures/invalid_utf8.txt.zst"
-    };
-    (bzip2) => {
-        "fixtures/invalid_utf8.txt.bz2"
-    };
-}
+#[path = "./common/macros.rs"]
+#[macro_use]
+mod macros;
 
 #[rustfmt::skip]
 macro_rules! do_execute {
@@ -225,6 +115,14 @@ mod test_2 {
     use runnel::medium::stringio::{StringErr, StringIn, StringOut};
     use runnel::*;
     use std::io::Write;
+    //
+    #[test]
+    fn test_mini() {
+        let (r, sioe) = do_execute!(&[fixture_mini!()], "");
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(buff!(sioe, sout), "a\n");
+        assert!(r.is_ok());
+    }
     //
     #[test]
     fn test_plain() {
@@ -433,7 +331,7 @@ mod test_2 {
     fn test_invalid_utf8() {
         let (r, sioe) = do_execute!(&[fixture_invalid_utf8!()], "");
         assert_eq!(buff!(sioe, serr), "");
-        assert_eq!(buff!(sioe, sout), "���\n");
+        assert_eq!(buff!(sioe, sout), invalid_utf8_result!());
         assert!(r.is_ok());
     }
     //
@@ -441,7 +339,7 @@ mod test_2 {
     fn test_invalid_utf8_gz() {
         let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(gz)], "");
         assert_eq!(buff!(sioe, serr), "");
-        assert_eq!(buff!(sioe, sout), "���\n");
+        assert_eq!(buff!(sioe, sout), invalid_utf8_result!());
         assert!(r.is_ok());
     }
     //
@@ -449,7 +347,7 @@ mod test_2 {
     fn test_invalid_utf8_lz4() {
         let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(lz4)], "");
         assert_eq!(buff!(sioe, serr), "");
-        assert_eq!(buff!(sioe, sout), "���\n");
+        assert_eq!(buff!(sioe, sout), invalid_utf8_result!());
         assert!(r.is_ok());
     }
     //
@@ -457,7 +355,7 @@ mod test_2 {
     fn test_invalid_utf8_xz() {
         let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(xz)], "");
         assert_eq!(buff!(sioe, serr), "");
-        assert_eq!(buff!(sioe, sout), "���\n");
+        assert_eq!(buff!(sioe, sout), invalid_utf8_result!());
         assert!(r.is_ok());
     }
     //
@@ -465,7 +363,7 @@ mod test_2 {
     fn test_invalid_utf8_zstd() {
         let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(zstd)], "");
         assert_eq!(buff!(sioe, serr), "");
-        assert_eq!(buff!(sioe, sout), "���\n");
+        assert_eq!(buff!(sioe, sout), invalid_utf8_result!());
         assert!(r.is_ok());
     }
     //
@@ -473,7 +371,7 @@ mod test_2 {
     fn test_invalid_utf8_bzip2() {
         let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(bzip2)], "");
         assert_eq!(buff!(sioe, serr), "");
-        assert_eq!(buff!(sioe, sout), "���\n");
+        assert_eq!(buff!(sioe, sout), invalid_utf8_result!());
         assert!(r.is_ok());
     }
 }

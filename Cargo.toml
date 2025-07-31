@@ -25,8 +25,6 @@ path = "src/main.rs"
 
 [features]
 default = ["flate2", "xz2", "zstd", "lz4", "bzip2"]
-#default = ["libflate"]
-#default = ["inflate"]
 debian_build = []
 
 [dependencies]
@@ -36,8 +34,6 @@ runnel = "0.3"
 memx-cdy = "0.1"
 
 flate2 = { version = "1.0", features = ["rust_backend"], default-features = false, optional = true }
-libflate = { version = "2.1", optional = true }
-inflate = { version = "0.4.5", optional = true }
 xz2 = { version = "0.1", optional = true }
 zstd = { version = "0.13", optional = true }
 lz4 = { version = "1.24", optional = true }

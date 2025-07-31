@@ -6,3 +6,6 @@ pub use self::opt_uc_x_param::OptUcXParam;
 
 pub mod adapt_input;
 pub use self::adapt_input::adapt_input;
+
+pub mod file_type;
+pub use self::file_type::{detect_file_type, FileType};
