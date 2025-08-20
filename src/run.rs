@@ -14,12 +14,9 @@ pub fn run(sioe: &RunnelIoe, conf: &CmdOptConf) -> anyhow::Result<()> {
 }
 
 fn run_0(sioe: &RunnelIoe, conf: &CmdOptConf) -> anyhow::Result<()> {
-    adapt_input(
-        sioe,
-        &conf.arg_params,
-        //|sioe: &mut RunnelIoe, reader: Option<&mut dyn BufRead>, path_s: &str, line_num: usize| {
-        |sioe, reader, path_s, line_num| process_input(sioe, conf, reader, path_s, line_num),
-    )?;
+    adapt_input(sioe, &conf.arg_params, |sioe, reader, path_s, line_num| {
+        process_input(sioe, conf, reader, path_s, line_num)
+    })?;
     let is_string_pipe_out = sioe.pg_out().is_line_pipe();
     if is_string_pipe_out {
         sioe.pg_out().flush_line()?;
@@ -77,31 +74,8 @@ fn process_text_simple<'a>(
 }
 
 fn process_text_simple_string_pipe_in(sioe: &RunnelIoe) -> anyhow::Result<()> {
-    //let is_string_pipe_out = sioe.pg_out().is_line_pipe();
     for line in sioe.pg_in().lines() {
         let line = line?;
-        /*
-        if is_string_pipe_out {
-            sioe.pg_out().write_line(line)?;
-        } else {
-            #[cfg(not(windows))]
-            sioe.pg_out().lock().write_fmt(format_args!("{line}"))?;
-            //
-            #[cfg(windows)]
-            {
-                let line_ss = line;
-                let ss = line_ss.as_bytes();
-                let len = ss.len();
-                if len >= 2 && ss[len - 2] == b'\r' && ss[len - 1] == b'\n' {
-                    let ss = &ss[..(len - 2)];
-                    let ssss = String::from_utf8_lossy(ss);
-                    sioe.pg_out().lock().write_fmt(format_args!("{ssss}\n"))?;
-                } else {
-                    sioe.pg_out().lock().write_fmt(format_args!("{line_ss}"))?;
-                }
-            }
-        }
-        */
         sioe.pg_out().write_line(line)?;
     }
     Ok(())
