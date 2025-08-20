@@ -82,7 +82,7 @@ fn process_text_simple_byte_in(
     sioe: &RunnelIoe,
     reader: Option<Box<dyn BufRead>>,
 ) -> anyhow::Result<()> {
-    let is_string_pipe_out = sioe.pg_out().is_line_pipe();
+    //let is_string_pipe_out = sioe.pg_out().is_line_pipe();
     let mut reader = match reader {
         Some(rd) => rd,
         None => sioe.pg_in().lock_bufread(),
@@ -105,6 +105,8 @@ fn process_text_simple_byte_in(
         };
         let line_ss = String::from_utf8_lossy(buf_s);
         //
+        sioe.pg_out().write_line(line_ss.to_string())?;
+        /*
         if is_string_pipe_out {
             sioe.pg_out().write_line(line_ss.to_string())?;
         } else {
@@ -118,6 +120,7 @@ fn process_text_simple_byte_in(
                 .lock()
                 .write_fmt(format_args!("{line_ss}\r\n"))?;
         }
+            */
     }
     Ok(())
 }
