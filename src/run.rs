@@ -26,8 +26,8 @@ fn run_0(sioe: &RunnelIoe, conf: &CmdOptConf) -> anyhow::Result<()> {
     Ok(())
 }
 
-fn process_input<'a>(
-    sioe: &'a RunnelIoe,
+fn process_input(
+    sioe: &RunnelIoe,
     conf: &CmdOptConf,
     reader: Option<Box<dyn BufRead>>,
     path_s: &str,
@@ -44,7 +44,7 @@ fn process_input<'a>(
     }
 }
 
-fn process_binary<'a>(sioe: &'a RunnelIoe, reader: Option<Box<dyn BufRead>>) -> anyhow::Result<()> {
+fn process_binary(sioe: &RunnelIoe, reader: Option<Box<dyn BufRead>>) -> anyhow::Result<()> {
     let mut reader = match reader {
         Some(rd) => rd,
         None => sioe.pg_in().lock_bufread(),
@@ -61,10 +61,7 @@ fn process_binary<'a>(sioe: &'a RunnelIoe, reader: Option<Box<dyn BufRead>>) -> 
     Ok(())
 }
 
-fn process_text_simple<'a>(
-    sioe: &'a RunnelIoe,
-    reader: Option<Box<dyn BufRead>>,
-) -> anyhow::Result<()> {
+fn process_text_simple(sioe: &RunnelIoe, reader: Option<Box<dyn BufRead>>) -> anyhow::Result<()> {
     let is_string_pipe_in = sioe.pg_in().is_line_pipe();
     if is_string_pipe_in {
         process_text_simple_string_pipe_in(sioe)

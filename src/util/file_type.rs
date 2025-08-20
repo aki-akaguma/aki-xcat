@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::io::{Read, Result as IoResult, Seek, SeekFrom};
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, Default, PartialEq, Eq, Clone, Copy)]
 pub enum FileType {
     Plain,
     Gzip,
@@ -9,13 +9,8 @@ pub enum FileType {
     Zstd,
     Lz4,
     Bzip2,
+    #[default]
     Other,
-}
-
-impl Default for FileType {
-    fn default() -> Self {
-        FileType::Other
-    }
 }
 
 pub fn detect_file_type(file: &mut File) -> IoResult<FileType> {

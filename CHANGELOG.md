@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * updated: runnel(0.4.0)
 * refactoring source codes
 
+### Fixed
+* `clippy::derivable_impls`
+* `clippy::needless_lifetimes`
+
 ## [0.2.0] (2025-07-31)
 ### Added
 * `-b` binary mode and default text mode
