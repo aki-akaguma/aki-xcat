@@ -114,18 +114,9 @@ fn process_text_simple_byte_in(
                 .write_fmt(format_args!("{line_ss}\n"))?;
             //
             #[cfg(windows)]
-            {
-                let line_ss = line_ss.to_string();
-                let ss = line_ss.as_bytes();
-                let len = ss.len();
-                if len >= 2 && ss[len - 2] == b'\r' && ss[len - 1] == b'\n' {
-                    let ss = &ss[..(len - 2)];
-                    let ssss = String::from_utf8_lossy(ss);
-                    sioe.pg_out().lock().write_fmt(format_args!("{ssss}\n"))?;
-                } else {
-                    sioe.pg_out().lock().write_fmt(format_args!("{line_ss}"))?;
-                }
-            }
+            sioe.pg_out()
+                .lock()
+                .write_fmt(format_args!("{line_ss}\r\n"))?;
         }
     }
     Ok(())
