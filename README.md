@@ -177,7 +177,7 @@ at your option.
 [crate-link]: https://crates.io/crates/aki-xcat
 [docs-image]: https://docs.rs/aki-xcat/badge.svg
 [docs-link]: https://docs.rs/aki-xcat/
-[rustc-image]: https://img.shields.io/badge/rustc-1.60+-blue.svg
+[rustc-image]: https://img.shields.io/badge/rustc-1.75+-blue.svg
 [license-image]: https://img.shields.io/badge/license-Apache2.0/MIT-blue.svg
 [test-ubuntu-image]: https://github.com/aki-akaguma/aki-xcat/actions/workflows/test-ubuntu.yml/badge.svg
 [test-ubuntu-link]: https://github.com/aki-akaguma/aki-xcat/actions/workflows/test-ubuntu.yml

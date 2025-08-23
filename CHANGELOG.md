@@ -6,13 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+* `specs`
+
 ### Changed
 * updated: runnel(0.4.0)
+* updated: rust-version-info-file(0.2)
 * refactoring source codes
 
 ### Fixed
 * `clippy::derivable_impls`
 * `clippy::needless_lifetimes`
+* rust-version: "1.75.0"
 
 ## [0.2.0] (2025-07-31)
 ### Added
