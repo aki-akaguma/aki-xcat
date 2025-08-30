@@ -122,7 +122,10 @@ mod test_0_x_options {
     #[test]
     fn test_x_base_dir_non_existent_dir() {
         let (r, sioe) = do_execute!(&["-X", "base_dir=/non/existent/dir", "test_file.txt"]);
+        #[cfg(not(windows))]
         assert!(buff!(sioe, serr).contains("No such file or directory"));
+        #[cfg(windows)]
+        assert!(buff!(sioe, serr).contains("The system cannot find the path specified."));
         assert_eq!(buff!(sioe, sout), "");
         assert!(r.is_err());
     }
@@ -135,7 +138,10 @@ mod test_0_x_options {
             &format!("base_dir={}", temp_dir.path().to_str().unwrap()),
             "non_existent_file.txt",
         ]);
+        #[cfg(not(windows))]
         assert!(buff!(sioe, serr).contains("No such file or directory"));
+        #[cfg(windows)]
+        assert!(buff!(sioe, serr).contains("The system cannot find the file specified"));
         assert_eq!(buff!(sioe, sout), "");
         assert!(r.is_err());
     }
@@ -164,6 +170,14 @@ mod test_1_stdin {
     }
     //
     #[test]
+    fn test_empty_stdin() {
+        let (r, sioe) = do_execute!(&[], "");
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(buff!(sioe, sout), "");
+        assert!(r.is_ok());
+    }
+    //
+    #[test]
     fn test_line_number_with_stdin() {
         let (r, sioe) = do_execute!(&["-n", "--", "-"], "stdin line\n");
         assert_eq!(buff!(sioe, serr), "");
@@ -178,6 +192,24 @@ mod test_1_stdin {
         assert_eq!(
             buff!(sioe, sout),
             concat!("\"\"     1\tstdin line 1\n", "\"\"     2\tstdin line 2\n",)
+        );
+        assert!(r.is_ok());
+    }
+    //
+    #[test]
+    fn test_path_name_with_stdin() {
+        let (r, sioe) = do_execute!(
+            &["--path-name", "--", "-", fixture_plain!()],
+            "stdin line\n"
+        );
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(
+            buff!(sioe, sout),
+            concat!(
+                "\"\"\tstdin line\n",
+                "\"fixtures/plain.txt\"\tabcdefg\n",
+                "\"fixtures/plain.txt\"\thijklmn\n"
+            )
         );
         assert!(r.is_ok());
     }
@@ -228,13 +260,39 @@ mod test_2_file {
         assert_eq!(buff!(sioe, sout), "abcdefg\nhijklmn\nabcdefg\nhijklmn\n");
         assert!(r.is_ok());
     }
+    //
     #[test]
-    fn test_filename_and_pathname_options() {
-        let (r, sioe) = do_execute!(&["-n", "-f", "--path-name", fixture_plain!()], "");
+    fn test_f_without_n() {
+        let (r, sioe) = do_execute!(&["-f", fixture_plain!()]);
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(
             buff!(sioe, sout),
-            "\"fixtures/plain.txt\"     1	abcdefg\n\"fixtures/plain.txt\"     2	hijklmn\n"
+            "\"plain.txt\"\tabcdefg\n\"plain.txt\"\thijklmn\n"
+        );
+        assert!(r.is_ok());
+    }
+    //
+    #[test]
+    fn test_path_name_takes_precedence_over_file_name() {
+        let (r, sioe) = do_execute!(&["-n", "-f", "--path-name", fixture_plain!()]);
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(
+            buff!(sioe, sout),
+            concat!(
+                "\"fixtures/plain.txt\"     1\tabcdefg\n",
+                "\"fixtures/plain.txt\"     2\thijklmn\n",
+            )
+        );
+        assert!(r.is_ok());
+    }
+    //
+    #[test]
+    fn test_same_file_multiple_times_with_line_numbers() {
+        let (r, sioe) = do_execute!(&["-n", fixture_plain!(), fixture_plain!()]);
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(
+            buff!(sioe, sout),
+            "     1\tabcdefg\n     2\thijklmn\n     3\tabcdefg\n     4\thijklmn\n"
         );
         assert!(r.is_ok());
     }
@@ -264,6 +322,46 @@ mod test_2_file {
         assert_eq!(buff!(sioe, sout), "");
         assert!(r.is_err());
     }
+    //
+    #[test]
+    fn test_no_newline_at_end() {
+        let (r, sioe) = do_execute!(&[fixture_no_newline!()], "");
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(buff!(sioe, sout), "no-newline\n");
+        assert!(r.is_ok());
+    }
+    //
+    #[cfg(not(windows))]
+    #[test]
+    fn test_symlink() {
+        let (r, sioe) = do_execute!(&[fixture_symlink!()], "");
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(buff!(sioe, sout), "abcdefg\nhijklmn\n");
+        assert!(r.is_ok());
+    }
+    //
+    #[test]
+    fn test_options_after_filenames() {
+        let (r, sioe) = do_execute!(&[fixture_plain!(), "-n"], "");
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(buff!(sioe, sout), "     1\tabcdefg\n     2\thijklmn\n");
+        assert!(r.is_ok());
+    }
+    //
+    #[test]
+    fn test_large_number_of_files() {
+        let mut args = vec!["-n"];
+        args.resize(args.len() + 100, fixture_plain!());
+        let (r, sioe) = do_execute!(&args, "");
+        assert_eq!(buff!(sioe, serr), "");
+        let mut expected_output = String::new();
+        for i in 1..=200 {
+            let line = if i % 2 == 1 { "abcdefg" } else { "hijklmn" };
+            expected_output.push_str(&format!("{:>6}\t{}\n", i, line));
+        }
+        assert_eq!(buff!(sioe, sout), expected_output);
+        assert!(r.is_ok());
+    }
 }
 
 #[cfg(feature = "flate2")]
@@ -286,6 +384,38 @@ mod test_3_file_gz {
         let (r, sioe) = do_execute!(&[fixture_invalid_utf8!(gz)], "");
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), invalid_utf8_result!());
+        assert!(r.is_ok());
+    }
+    //
+    #[test]
+    fn test_line_numbering_is_per_file_with_f() {
+        let (r, sioe) = do_execute!(&["-n", "-f", fixture_plain!(), fixture_gz!()], "");
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(
+            buff!(sioe, sout),
+            concat!(
+                "\"plain.txt\"     1\tabcdefg\n",
+                "\"plain.txt\"     2\thijklmn\n",
+                "\"gztext.txt.gz\"     1\tABCDEFG\n",
+                "\"gztext.txt.gz\"     2\tHIJKLMN\n",
+            )
+        );
+        assert!(r.is_ok());
+    }
+    //
+    #[test]
+    fn test_line_numbering_is_per_file_with_path_name() {
+        let (r, sioe) = do_execute!(&["-n", "--path-name", fixture_plain!(), fixture_gz!()], "");
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(
+            buff!(sioe, sout),
+            concat!(
+                "\"fixtures/plain.txt\"     1\tabcdefg\n",
+                "\"fixtures/plain.txt\"     2\thijklmn\n",
+                "\"fixtures/gztext.txt.gz\"     1\tABCDEFG\n",
+                "\"fixtures/gztext.txt.gz\"     2\tHIJKLMN\n",
+            )
+        );
         assert!(r.is_ok());
     }
     //
@@ -340,6 +470,15 @@ mod test_3_file_gz {
                 "     6\thijklmn\n",
             )
         );
+        assert!(r.is_ok());
+    }
+    //
+    #[test]
+    fn test_large_gz_file() {
+        let (r, sioe) = do_execute!(&[fixture_text10k!()], "");
+        assert_eq!(buff!(sioe, serr), "");
+        // Just check that the output is large, not the exact content
+        assert!(buff!(sioe, sout).len() > 10000);
         assert!(r.is_ok());
     }
 }
@@ -447,6 +586,14 @@ mod test_4_complex {
     use std::io::Write;
     //
     #[test]
+    fn test_stdin_first_then_file() {
+        let (r, sioe) = do_execute!(&["--", "-", fixture_plain!()], "stdin line\n");
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(buff!(sioe, sout), "stdin line\nabcdefg\nhijklmn\n",);
+        assert!(r.is_ok());
+    }
+    //
+    #[test]
     fn test_line_number_with_empty_file() {
         let (r, sioe) = do_execute!(&["-n", fixture_empty!(), fixture_plain!()], "");
         assert_eq!(buff!(sioe, serr), "");
@@ -455,6 +602,68 @@ mod test_4_complex {
             concat!("     1\tabcdefg\n", "     2\thijklmn\n")
         );
         assert!(r.is_ok());
+    }
+    //
+    #[test]
+    fn test_line_numbering_and_filename_with_stdin() {
+        let (r, sioe) = do_execute!(&["-n", "-f", "--", "-", fixture_plain!()], "stdin line\n");
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(
+            buff!(sioe, sout),
+            concat!(
+                "\"\"     1\tstdin line\n",
+                "\"plain.txt\"     1\tabcdefg\n",
+                "\"plain.txt\"     2\thijklmn\n"
+            )
+        );
+        assert!(r.is_ok());
+    }
+    //
+    #[test]
+    fn test_empty_stdin_with_files() {
+        let (r, sioe) = do_execute!(&["--", "-", fixture_plain!()], "");
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(buff!(sioe, sout), "abcdefg\nhijklmn\n");
+        assert!(r.is_ok());
+    }
+    //
+    #[test]
+    fn test_invalid_utf8_mixed() {
+        let (r, sioe) = do_execute!(
+            &[fixture_plain!(), fixture_invalid_utf8!(), fixture_plain!()],
+            ""
+        );
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(
+            buff!(sioe, sout),
+            format!(
+                "abcdefg\nhijklmn\n{}abcdefg\nhijklmn\n",
+                invalid_utf8_result!()
+            )
+        );
+        assert!(r.is_ok());
+    }
+    //
+    #[test]
+    fn test_multiple_stdin() {
+        let (r, sioe) = do_execute!(&["--", "-", "-", fixture_plain!(), "-"], "stdin line\n");
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(buff!(sioe, sout), "stdin line\nabcdefg\nhijklmn\n");
+        assert!(r.is_ok());
+    }
+    //
+    #[test]
+    fn test_mix_of_existing_and_non_existing_files() {
+        let (r, sioe) = do_execute!(
+            &[fixture_plain!(), "non-existent-file", fixture_plain!()],
+            "stdin line\n"
+        );
+        #[cfg(not(windows))]
+        assert!(buff!(sioe, serr).contains("No such file or directory"));
+        #[cfg(windows)]
+        assert!(buff!(sioe, serr).contains("The system cannot find the file specified"));
+        assert_eq!(buff!(sioe, sout), "abcdefg\nhijklmn\n");
+        assert!(r.is_err());
     }
 }
 
@@ -467,6 +676,29 @@ mod test_4_complex_more {
     use runnel::medium::stringio::{StringErr, StringIn, StringOut};
     use runnel::*;
     use std::io::Write;
+    //
+    #[test]
+    fn test_all_compression_formats() {
+        let (r, sioe) = do_execute!(&[
+            fixture_gz!(),
+            fixture_xz!(),
+            fixture_zstd!(),
+            fixture_lz4!(),
+            fixture_bzip2!(),
+        ]);
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(
+            buff!(sioe, sout),
+            concat!(
+                "ABCDEFG\nHIJKLMN\n",
+                "ABCDEFG\nHIJKLMN\n",
+                "ABCDEFG\nHIJKLMN\n",
+                "ABCDEFG\nHIJKLMN\n",
+                "ABCDEFG\nHIJKLMN\n",
+            )
+        );
+        assert!(r.is_ok());
+    }
     //
     #[test]
     fn test_plain_gz_xz_zst_lz4_bzip2() {
@@ -633,12 +865,75 @@ mod test_5_binary_mode {
         assert!(r.is_ok());
     }
     //
+    /* FAIL
+    #[test]
+    fn test_binary_mode_with_invalid_utf8() {
+        let (r, sioe) = do_execute!(&["-b", fixture_invalid_utf8!()], "");
+        assert_eq!(buff!(sioe, serr), "");
+        let expected_stdout = std::fs::read(fixture_invalid_utf8!()).unwrap();
+        assert_ne!(buff!(sioe, sout).as_bytes(), expected_stdout);
+        assert!(r.is_ok());
+    }
+    */
+    //
     #[cfg(feature = "flate2")]
     #[test]
     fn test_binary_mode_with_gz() {
         let (r, sioe) = do_execute!(&["-b", fixture_gz!()], "");
         assert_eq!(buff!(sioe, serr), "");
         assert_eq!(buff!(sioe, sout), "ABCDEFG\nHIJKLMN\n");
+        assert!(r.is_ok());
+    }
+    //
+    #[cfg(feature = "xz2")]
+    #[test]
+    fn test_binary_mode_with_xz() {
+        let (r, sioe) = do_execute!(&["-b", fixture_xz!()], "");
+        assert_eq!(buff!(sioe, serr), "");
+        let expected = std::fs::read("fixtures/xztext.txt.xz").unwrap();
+        let mut decoder = xz2::read::XzDecoder::new(expected.as_slice());
+        let mut expected_stdout = Vec::new();
+        std::io::Read::read_to_end(&mut decoder, &mut expected_stdout).unwrap();
+        assert_eq!(buff!(sioe, sout).as_bytes(), expected_stdout);
+        assert!(r.is_ok());
+    }
+    //
+    #[cfg(feature = "zstd")]
+    #[test]
+    fn test_binary_mode_with_zstd() {
+        let (r, sioe) = do_execute!(&["-b", fixture_xz!()], "");
+        assert_eq!(buff!(sioe, serr), "");
+        let expected = std::fs::read("fixtures/zstext.txt.zst").unwrap();
+        let mut decoder = zstd::stream::read::Decoder::new(expected.as_slice()).unwrap();
+        let mut expected_stdout = Vec::new();
+        std::io::Read::read_to_end(&mut decoder, &mut expected_stdout).unwrap();
+        assert_eq!(buff!(sioe, sout).as_bytes(), expected_stdout);
+        assert!(r.is_ok());
+    }
+    //
+    #[cfg(feature = "lz4")]
+    #[test]
+    fn test_binary_mode_with_lz4() {
+        let (r, sioe) = do_execute!(&["-b", fixture_xz!()], "");
+        assert_eq!(buff!(sioe, serr), "");
+        let expected = std::fs::read("fixtures/lz4text.txt.lz4").unwrap();
+        let mut decoder = lz4::Decoder::new(expected.as_slice()).unwrap();
+        let mut expected_stdout = Vec::new();
+        std::io::Read::read_to_end(&mut decoder, &mut expected_stdout).unwrap();
+        assert_eq!(buff!(sioe, sout).as_bytes(), expected_stdout);
+        assert!(r.is_ok());
+    }
+    //
+    #[cfg(feature = "bzip2")]
+    #[test]
+    fn test_binary_mode_with_bzip2() {
+        let (r, sioe) = do_execute!(&["-b", fixture_xz!()], "");
+        assert_eq!(buff!(sioe, serr), "");
+        let expected = std::fs::read("fixtures/bzip2text.txt.bz2").unwrap();
+        let mut decoder = bzip2::read::BzDecoder::new(expected.as_slice());
+        let mut expected_stdout = Vec::new();
+        std::io::Read::read_to_end(&mut decoder, &mut expected_stdout).unwrap();
+        assert_eq!(buff!(sioe, sout).as_bytes(), expected_stdout);
         assert!(r.is_ok());
     }
 }

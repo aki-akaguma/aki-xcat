@@ -1,3 +1,5 @@
+#![allow(unused_macros)]
+
 macro_rules! help_msg {
     () => {
         concat!(
@@ -76,6 +78,16 @@ macro_rules! fixture_mini {
 macro_rules! fixture_plain {
     () => {
         "fixtures/plain.txt"
+    };
+}
+macro_rules! fixture_no_newline {
+    () => {
+        "fixtures/no_newline.txt"
+    };
+}
+macro_rules! fixture_symlink {
+    () => {
+        "fixtures/symlink.txt"
     };
 }
 
