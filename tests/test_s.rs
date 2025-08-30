@@ -122,7 +122,10 @@ mod test_0_x_options {
     #[test]
     fn test_x_base_dir_non_existent_dir() {
         let (r, sioe) = do_execute!(&["-X", "base_dir=/non/existent/dir", "test_file.txt"]);
+        #[cfg(not(windows))]
         assert!(buff!(sioe, serr).contains("No such file or directory"));
+        #[cfg(windows)]
+        assert!(buff!(sioe, serr).contains("The system cannot find the path specified."));
         assert_eq!(buff!(sioe, sout), "");
         assert!(r.is_err());
     }
@@ -135,7 +138,10 @@ mod test_0_x_options {
             &format!("base_dir={}", temp_dir.path().to_str().unwrap()),
             "non_existent_file.txt",
         ]);
+        #[cfg(not(windows))]
         assert!(buff!(sioe, serr).contains("No such file or directory"));
+        #[cfg(windows)]
+        assert!(buff!(sioe, serr).contains("The system cannot find the file specified"));
         assert_eq!(buff!(sioe, sout), "");
         assert!(r.is_err());
     }

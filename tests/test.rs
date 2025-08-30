@@ -94,7 +94,12 @@ mod test_0_x_options {
             TARGET_EXE_PATH,
             ["-X", "base_dir=/non/existent/dir", "test_file.txt"],
         );
+        #[cfg(not(windows))]
         assert!(oup.stderr.contains("No such file or directory"));
+        #[cfg(windows)]
+        assert!(oup
+            .stderr
+            .contains("The system cannot find the path specified."));
         assert_eq!(oup.stdout, "");
         assert!(!oup.status.success());
     }
@@ -110,7 +115,12 @@ mod test_0_x_options {
                 "non_existent_file.txt",
             ],
         );
+        #[cfg(not(windows))]
         assert!(oup.stderr.contains("No such file or directory"));
+        #[cfg(windows)]
+        assert!(oup
+            .stderr
+            .contains("The system cannot find the file specified"));
         assert_eq!(oup.stdout, "");
         assert!(!oup.status.success());
     }
