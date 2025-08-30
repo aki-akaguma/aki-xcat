@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 * `specs`
+* support of option: `-X base_dir=`
+* more tests
 
 ### Changed
 * updated: runnel(0.4.0)

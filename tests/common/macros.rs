@@ -63,6 +63,11 @@ macro_rules! version_msg {
     };
 }
 
+macro_rules! fixture_empty {
+    () => {
+        "fixtures/empty.txt"
+    };
+}
 macro_rules! fixture_mini {
     () => {
         "fixtures/mini.txt"
@@ -73,32 +78,43 @@ macro_rules! fixture_plain {
         "fixtures/plain.txt"
     };
 }
+
+#[cfg(feature = "flate2")]
 macro_rules! fixture_gz {
     () => {
         "fixtures/gztext.txt.gz"
     };
 }
+
+#[cfg(feature = "xz2")]
 macro_rules! fixture_xz {
     () => {
         "fixtures/xztext.txt.xz"
     };
 }
+
+#[cfg(feature = "zstd")]
 macro_rules! fixture_zstd {
     () => {
         "fixtures/zstext.txt.zst"
     };
 }
+
+#[cfg(feature = "lz4")]
 macro_rules! fixture_lz4 {
     () => {
         "fixtures/lz4text.txt.lz4"
     };
 }
+
+#[cfg(feature = "bzip2")]
 macro_rules! fixture_bzip2 {
     () => {
         "fixtures/bzip2text.txt.bz2"
     };
 }
 
+#[cfg(feature = "flate2")]
 #[allow(unused_macros)]
 macro_rules! fixture_text10k {
     () => {

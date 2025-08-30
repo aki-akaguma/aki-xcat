@@ -20,7 +20,12 @@ use runnel::RunnelIoe;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
-pub fn adapt_input<F>(sioe: &RunnelIoe, files: &[String], mut f: F) -> anyhow::Result<()>
+pub fn adapt_input<F>(
+    sioe: &RunnelIoe,
+    base_dir: String,
+    files: &[String],
+    mut f: F,
+) -> anyhow::Result<()>
 where
     F: FnMut(&RunnelIoe, Option<Box<dyn BufRead>>, &str, usize) -> anyhow::Result<usize>,
 {
@@ -32,7 +37,12 @@ where
             if path_s == "-" {
                 line_num = f(sioe, None, "", line_num)?;
             } else {
-                line_num = cat_process_file(sioe, path_s, line_num, &mut f)?;
+                line_num = if base_dir.is_empty() {
+                    cat_process_file(sioe, path_s, line_num, &mut f)?
+                } else {
+                    let s = format!("{base_dir}/{path_s}");
+                    cat_process_file(sioe, &s, line_num, &mut f)?
+                };
             }
         }
     }

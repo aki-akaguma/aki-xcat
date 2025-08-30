@@ -14,9 +14,12 @@ pub fn run(sioe: &RunnelIoe, conf: &CmdOptConf) -> anyhow::Result<()> {
 }
 
 fn run_0(sioe: &RunnelIoe, conf: &CmdOptConf) -> anyhow::Result<()> {
-    adapt_input(sioe, &conf.arg_params, |sioe, reader, path_s, line_num| {
-        process_input(sioe, conf, reader, path_s, line_num)
-    })?;
+    adapt_input(
+        sioe,
+        conf.base_dir(),
+        &conf.arg_params,
+        |sioe, reader, path_s, line_num| process_input(sioe, conf, reader, path_s, line_num),
+    )?;
     let is_string_pipe_out = sioe.pg_out().is_line_pipe();
     if is_string_pipe_out {
         sioe.pg_out().flush_line()?;

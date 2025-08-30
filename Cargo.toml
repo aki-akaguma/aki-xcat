@@ -46,6 +46,7 @@ bzip2 = { version = "0.5.2", optional = true }
 [dev-dependencies]
 indoc = "2.0"
 exec-target = "0.2"
+tempfile = "3.10"
 
 [build-dependencies]
 rust-version-info-file = "0.2"
@@ -61,7 +62,7 @@ section = "AAA-text"
 priority = "optional"
 maintainer = "aki <aki.akaguma@hotmail.com>"
 extended-description = """\
-concatenate files that are plain, gzip, xz and zstd.
+concatenate files that are plain, gzip, xz, zstd and bzip2.
 """
 depends = "$auto"
 separate-debug-symbols = true
