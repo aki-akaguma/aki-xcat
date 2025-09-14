@@ -1,11 +1,9 @@
 #![allow(unused_macros)]
-
 macro_rules! help_msg {
     () => {
         concat!(
             version_msg!(),
-            "
-",
+            "\n",
             indoc::indoc!(
                 r#"
             Usage:
@@ -34,63 +32,84 @@ macro_rules! help_msg {
                 aki-xcat file1 file2.gz file3.xz file4.zst file5.lz4 file6.bz2
             "#
             ),
-            "
-"
+            "\n",
         )
     };
 }
 
-macro_rules! try_help_msg {
+#[allow(unused_macros)]
+macro_rules! x_help_msg {
     () => {
-        "Try --help for help.
-"
+        concat!(
+            indoc::indoc!(
+                r#"
+            Options:
+              -X rust-version-info     display rust version info and exit
+              -X base_dir=<path>       set <path> is base directory
+            "#
+            ),
+            "\n",
+        )
     };
 }
 
+#[allow(unused_macros)]
+macro_rules! try_help_msg {
+    () => {
+        "Try --help for help.\n"
+    };
+}
+
+#[allow(unused_macros)]
 macro_rules! program_name {
     () => {
         "aki-xcat"
     };
 }
 
+#[allow(unused_macros)]
 macro_rules! version_msg {
     () => {
-        concat!(
-            program_name!(),
-            " ",
-            env!("CARGO_PKG_VERSION"),
-            "
-"
-        )
+        concat!(program_name!(), " ", env!("CARGO_PKG_VERSION"), "\n")
     };
 }
 
+#[allow(unused_macros)]
 macro_rules! fixture_empty {
     () => {
         "fixtures/empty.txt"
     };
 }
+
+#[allow(unused_macros)]
 macro_rules! fixture_mini {
     () => {
         "fixtures/mini.txt"
     };
 }
+
+#[allow(unused_macros)]
 macro_rules! fixture_plain {
     () => {
         "fixtures/plain.txt"
     };
 }
+
+#[allow(unused_macros)]
 macro_rules! fixture_no_newline {
     () => {
         "fixtures/no_newline.txt"
     };
 }
+
+#[allow(unused_macros)]
 macro_rules! fixture_symlink {
     () => {
         "fixtures/symlink.txt"
     };
 }
 
+#[allow(unused_macros)]
 #[cfg(feature = "flate2")]
 macro_rules! fixture_gz {
     () => {
@@ -98,6 +117,7 @@ macro_rules! fixture_gz {
     };
 }
 
+#[allow(unused_macros)]
 #[cfg(feature = "xz2")]
 macro_rules! fixture_xz {
     () => {
@@ -105,6 +125,7 @@ macro_rules! fixture_xz {
     };
 }
 
+#[allow(unused_macros)]
 #[cfg(feature = "zstd")]
 macro_rules! fixture_zstd {
     () => {
@@ -112,6 +133,7 @@ macro_rules! fixture_zstd {
     };
 }
 
+#[allow(unused_macros)]
 #[cfg(feature = "lz4")]
 macro_rules! fixture_lz4 {
     () => {
@@ -119,6 +141,7 @@ macro_rules! fixture_lz4 {
     };
 }
 
+#[allow(unused_macros)]
 #[cfg(feature = "bzip2")]
 macro_rules! fixture_bzip2 {
     () => {
@@ -126,14 +149,15 @@ macro_rules! fixture_bzip2 {
     };
 }
 
-#[cfg(feature = "flate2")]
 #[allow(unused_macros)]
+#[cfg(feature = "flate2")]
 macro_rules! fixture_text10k {
     () => {
         "fixtures/text10k.txt.gz"
     };
 }
 
+#[allow(unused_macros)]
 macro_rules! fixture_invalid_utf8 {
     () => {
         "fixtures/invalid_utf8.txt"
@@ -154,6 +178,8 @@ macro_rules! fixture_invalid_utf8 {
         "fixtures/invalid_utf8.txt.bz2"
     };
 }
+
+#[allow(unused_macros)]
 macro_rules! invalid_utf8_result {
     () => {
         "���\n"

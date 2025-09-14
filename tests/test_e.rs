@@ -1,12 +1,12 @@
 const TARGET_EXE_PATH: &str = env!(concat!("CARGO_BIN_EXE_", env!("CARGO_PKG_NAME")));
 
-#[path = "./common/macros.rs"]
 #[macro_use]
-mod macros;
+mod helper;
 
-//mod helper;
+#[macro_use]
+mod helper_e;
 
-mod test_0 {
+mod test_0_e {
     use exec_target::exec_target;
     //use exec_target::args_from;
     const TARGET_EXE_PATH: &str = super::TARGET_EXE_PATH;
@@ -56,11 +56,19 @@ mod test_0 {
     }
 }
 
-mod test_0_x_options {
+mod test_0_x_options_e {
     use exec_target::exec_target;
     use std::fs;
     use tempfile::tempdir;
     const TARGET_EXE_PATH: &str = super::TARGET_EXE_PATH;
+    //
+    #[test]
+    fn test_x_option_help() {
+        let oup = exec_target(TARGET_EXE_PATH, ["-X", "help"]);
+        assert_eq!(oup.stderr, "");
+        assert_eq!(oup.stdout, x_help_msg!());
+        assert!(oup.status.success());
+    }
     //
     #[test]
     fn test_x_rust_version_info() {
@@ -126,7 +134,7 @@ mod test_0_x_options {
     }
 }
 
-mod test_1_stdin {
+mod test_1_stdin_e {
     use exec_target::exec_target_with_in;
     const TARGET_EXE_PATH: &str = super::TARGET_EXE_PATH;
     //
@@ -203,9 +211,23 @@ mod test_1_stdin {
         assert_eq!(oup.stdout, "stdin line\n");
         assert!(oup.status.success());
     }
+    //
+    /*
+    #[test]
+    fn test_invalid_utf8() {
+        let v = std::fs::read(fixture_invalid_utf8!()).unwrap();
+        let oup = exec_target_with_in(TARGET_EXE_PATH, ["--", "-"], &v);
+        assert_eq!(
+            oup.stderr,
+            concat!(program_name!(), ": stream did not contain valid UTF-8\n",)
+        );
+        assert_eq!(oup.stdout, "");
+        assert!(!oup.status.success());
+    }
+    */
 }
 
-mod test_2_file {
+mod test_2_file_e {
     use exec_target::exec_target;
     const TARGET_EXE_PATH: &str = super::TARGET_EXE_PATH;
     //
@@ -348,7 +370,7 @@ mod test_2_file {
 }
 
 #[cfg(feature = "flate2")]
-mod test_3_file_gz {
+mod test_3_file_gz_e {
     use exec_target::exec_target;
     use exec_target::exec_target_with_in;
     const TARGET_EXE_PATH: &str = super::TARGET_EXE_PATH;
@@ -477,7 +499,7 @@ mod test_3_file_gz {
 }
 
 #[cfg(feature = "xz2")]
-mod test_3_file_xz2 {
+mod test_3_file_xz2_e {
     use exec_target::exec_target;
     const TARGET_EXE_PATH: &str = super::TARGET_EXE_PATH;
     //
@@ -499,7 +521,7 @@ mod test_3_file_xz2 {
 }
 
 #[cfg(feature = "zstd")]
-mod test_3_file_zstd {
+mod test_3_file_zstd_e {
     use exec_target::exec_target;
     const TARGET_EXE_PATH: &str = super::TARGET_EXE_PATH;
     //
@@ -521,7 +543,7 @@ mod test_3_file_zstd {
 }
 
 #[cfg(feature = "lz4")]
-mod test_3_file_lz4 {
+mod test_3_file_lz4_e {
     use exec_target::exec_target;
     const TARGET_EXE_PATH: &str = super::TARGET_EXE_PATH;
     //
@@ -543,7 +565,7 @@ mod test_3_file_lz4 {
 }
 
 #[cfg(feature = "bzip2")]
-mod test_3_file_bzip2 {
+mod test_3_file_bzip2_e {
     use exec_target::exec_target;
     const TARGET_EXE_PATH: &str = super::TARGET_EXE_PATH;
     //
@@ -564,7 +586,7 @@ mod test_3_file_bzip2 {
     }
 }
 
-mod test_4_complex {
+mod test_4_complex_e {
     use exec_target::exec_target;
     use exec_target::exec_target_with_in;
     const TARGET_EXE_PATH: &str = super::TARGET_EXE_PATH;
@@ -673,7 +695,7 @@ mod test_4_complex {
 #[cfg(feature = "zstd")]
 #[cfg(feature = "lz4")]
 #[cfg(feature = "bzip2")]
-mod test_4_complex_more {
+mod test_4_complex_more_e {
     use exec_target::exec_target;
     use exec_target::exec_target_with_in;
     const TARGET_EXE_PATH: &str = super::TARGET_EXE_PATH;
@@ -856,7 +878,7 @@ mod test_4_complex_more {
     }
 }
 
-mod test_5_binary_mode {
+mod test_5_binary_mode_e {
     use exec_target::exec_target;
     const TARGET_EXE_PATH: &str = super::TARGET_EXE_PATH;
     //
@@ -943,7 +965,7 @@ mod test_5_binary_mode {
 }
 
 #[cfg(feature = "flate2")]
-mod test_9_broken_pipe {
+mod test_9_broken_pipe_e {
     use exec_target::exec_target;
     const TARGET_EXE_PATH: &str = super::TARGET_EXE_PATH;
     //

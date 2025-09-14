@@ -1,47 +1,13 @@
-#[path = "./common/macros.rs"]
 #[macro_use]
-mod macros;
+mod helper;
 
-#[rustfmt::skip]
-macro_rules! do_execute {
-    ($args:expr) => {
-        do_execute!($args, "")
-    };
-    ($args:expr, $sin:expr) => {{
-        let sioe = RunnelIoe::new(
-            Box::new(StringIn::with_str($sin)),
-            #[allow(clippy::box_default)]
-            Box::new(StringOut::default()),
-            #[allow(clippy::box_default)]
-            Box::new(StringErr::default()),
-        );
-        let program = env!("CARGO_PKG_NAME");
-        let r = execute(&sioe, &program, $args);
-        match r {
-            Ok(_) => {}
-            Err(ref err) => {
-                let _ = sioe.pg_err().lock()
-                .write_fmt(format_args!("{}: {:#}\n", program, err));
-            }
-        };
-        (r, sioe)
-    }};
-}
+#[macro_use]
+mod helper_l;
 
-macro_rules! buff {
-    ($sioe:expr, serr) => {
-        $sioe.pg_err().lock().buffer_to_string()
-    };
-    ($sioe:expr, sout) => {
-        $sioe.pg_out().lock().buffer_to_string()
-    };
-}
-
-mod test_0 {
+mod test_0_l {
     use libaki_xcat::*;
     use runnel::medium::stringio::*;
     use runnel::*;
-    use std::io::Write;
     //
     #[test]
     fn test_help() {
@@ -88,13 +54,20 @@ mod test_0 {
     }
 }
 
-mod test_0_x_options {
+mod test_0_x_options_l {
     use libaki_xcat::*;
     use runnel::medium::stringio::*;
     use runnel::*;
     use std::fs;
-    use std::io::Write;
     use tempfile::tempdir;
+    //
+    #[test]
+    fn test_x_option_help() {
+        let (r, sioe) = do_execute!(["-X", "help"]);
+        assert_eq!(buff!(sioe, serr), "");
+        assert_eq!(buff!(sioe, sout), x_help_msg!());
+        assert!(r.is_ok());
+    }
     //
     #[test]
     fn test_x_rust_version_info() {
@@ -147,11 +120,10 @@ mod test_0_x_options {
     }
 }
 
-mod test_1_stdin {
+mod test_1_stdin_l {
     use libaki_xcat::*;
     use runnel::medium::stringio::{StringErr, StringIn, StringOut};
     use runnel::*;
-    use std::io::Write;
     //
     #[test]
     fn test_non_option() {
@@ -220,11 +192,10 @@ mod test_1_stdin {
     }
 }
 
-mod test_2_file {
+mod test_2_file_l {
     use libaki_xcat::*;
     use runnel::medium::stringio::{StringErr, StringIn, StringOut};
     use runnel::*;
-    use std::io::Write;
     //
     #[test]
     fn test_empty() {
@@ -362,11 +333,10 @@ mod test_2_file {
 }
 
 #[cfg(feature = "flate2")]
-mod test_3_file_gz {
+mod test_3_file_gz_l {
     use libaki_xcat::*;
     use runnel::medium::stringio::{StringErr, StringIn, StringOut};
     use runnel::*;
-    use std::io::Write;
     //
     #[test]
     fn test_gz() {
@@ -481,11 +451,10 @@ mod test_3_file_gz {
 }
 
 #[cfg(feature = "xz2")]
-mod test_3_file_xz2 {
+mod test_3_file_xz2_l {
     use libaki_xcat::*;
     use runnel::medium::stringio::{StringErr, StringIn, StringOut};
     use runnel::*;
-    use std::io::Write;
     //
     #[test]
     fn test_xz() {
@@ -505,11 +474,10 @@ mod test_3_file_xz2 {
 }
 
 #[cfg(feature = "zstd")]
-mod test_3_file_zstd {
+mod test_3_file_zstd_l {
     use libaki_xcat::*;
     use runnel::medium::stringio::{StringErr, StringIn, StringOut};
     use runnel::*;
-    use std::io::Write;
     //
     #[test]
     fn test_zstd() {
@@ -529,11 +497,10 @@ mod test_3_file_zstd {
 }
 
 #[cfg(feature = "lz4")]
-mod test_3_file_lz4 {
+mod test_3_file_lz4_l {
     use libaki_xcat::*;
     use runnel::medium::stringio::{StringErr, StringIn, StringOut};
     use runnel::*;
-    use std::io::Write;
     //
     #[test]
     fn test_lz4() {
@@ -553,11 +520,10 @@ mod test_3_file_lz4 {
 }
 
 #[cfg(feature = "bzip2")]
-mod test_3_file_bzip2 {
+mod test_3_file_bzip2_l {
     use libaki_xcat::*;
     use runnel::medium::stringio::{StringErr, StringIn, StringOut};
     use runnel::*;
-    use std::io::Write;
     //
     #[test]
     fn test_bzip2() {
@@ -576,11 +542,10 @@ mod test_3_file_bzip2 {
     }
 }
 
-mod test_4_complex {
+mod test_4_complex_l {
     use libaki_xcat::*;
     use runnel::medium::stringio::{StringErr, StringIn, StringOut};
     use runnel::*;
-    use std::io::Write;
     //
     #[test]
     fn test_stdin_first_then_file() {
@@ -668,11 +633,10 @@ mod test_4_complex {
 #[cfg(feature = "zstd")]
 #[cfg(feature = "lz4")]
 #[cfg(feature = "bzip2")]
-mod test_4_complex_more {
+mod test_4_complex_more_l {
     use libaki_xcat::*;
     use runnel::medium::stringio::{StringErr, StringIn, StringOut};
     use runnel::*;
-    use std::io::Write;
     //
     #[test]
     fn test_all_compression_formats() {
@@ -845,11 +809,10 @@ mod test_4_complex_more {
     }
 }
 
-mod test_5_binary_mode {
+mod test_5_binary_mode_l {
     use libaki_xcat::*;
     use runnel::medium::stringio::{StringErr, StringIn, StringOut};
     use runnel::*;
-    use std::io::Write;
     //
     #[test]
     fn test_binary_mode_with_plain() {
@@ -935,11 +898,10 @@ mod test_5_binary_mode {
     }
 }
 
-mod test_9_broken_pipe {
+mod test_9_broken_pipe_l {
     /*
     use libaki_xcat::*;
     use runnel::medium::stringio::{StringErr, StringIn, StringOut};
-    use std::io::Write;
     //
      * can NOT test
     #[test]
