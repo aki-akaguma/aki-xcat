@@ -47,6 +47,9 @@ indoc = "2.0"
 exec-target = "0.2"
 tempfile = "3.10"
 
+[patch.crates-io]
+getrandom = { git = "https://github.com/rust-random/getrandom.git", tag = "v0.3.4" }
+
 [build-dependencies]
 rust-version-info-file = "0.2"
 
