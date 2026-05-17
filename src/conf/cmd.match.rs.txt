@@ -19,6 +19,6 @@ match CmdOp::from(nv.opt.num) {
         conf.flg_version = true;
     }
     CmdOp::UcX => {
-        conf.opt_uc_x.push(value_to_opt_uc_x_param(nv)?);
+        conf.opt_uc_x.push(value_to_type::<OptUcXParam>(nv)?);
     }
 }
