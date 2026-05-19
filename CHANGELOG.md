@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * patch crate: getrandom(0.3.4)
 * update crate: runnel(0.4.2)
 * refactor file type detection logic with named constants and improved documentation
+* simplify file type detection logic by using `read()` instead of `read_exact()` to avoid explicit `UnexpectedEof` handling
 
 ### Fixed
 * `clippy::needless_borrow`

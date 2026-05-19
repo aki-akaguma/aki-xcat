@@ -29,17 +29,10 @@ const MAGIC_BZIP2: [u8; 3] = [0x42, 0x5a, 0x68];
 
 pub fn detect_file_type(file: &mut File) -> IoResult<FileType> {
     let mut magic_bytes = [0; 4];
-    let is_mini = if let Err(err) = file.read_exact(&mut magic_bytes) {
-        if err.kind() != std::io::ErrorKind::UnexpectedEof {
-            return Err(err);
-        }
-        true
-    } else {
-        false
-    };
+    let n = file.read(&mut magic_bytes)?;
     file.seek(SeekFrom::Start(0))?; // Rewind after reading
 
-    Ok(if is_mini {
+    Ok(if n < 4 {
         FileType::Plain
     } else if magic_bytes.starts_with(&MAGIC_GZIP) {
         FileType::Gzip
