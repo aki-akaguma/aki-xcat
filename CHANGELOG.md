@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * update crate: flood-tide(0.2.14), flood-tide-gen(0.2.2)
 * patch crate: getrandom(0.3.4)
 * update crate: runnel(0.4.2)
+* refactor file type detection logic with named constants and improved documentation
 
 ### Fixed
 * `clippy::needless_borrow`
