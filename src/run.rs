@@ -194,3 +194,71 @@ impl<'a> TextDecorator<'a> {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_decorator_numbering() {
+        let conf = CmdOptConf {
+            flg_number: true,
+            ..Default::default()
+        };
+
+        let mut decorator = TextDecorator::new(&conf, "test.txt", 0);
+        assert_eq!(decorator.next_prefix(), "     1");
+        assert_eq!(decorator.next_prefix(), "     2");
+    }
+
+    #[test]
+    fn test_decorator_filename_and_number() {
+        let conf = CmdOptConf {
+            flg_file_name: true,
+            flg_number: true,
+            ..Default::default()
+        };
+
+        let mut decorator = TextDecorator::new(&conf, "dir/test.txt", 0);
+        assert_eq!(decorator.next_prefix(), "\"test.txt\"     1");
+        assert_eq!(decorator.next_prefix(), "\"test.txt\"     2");
+    }
+
+    #[test]
+    fn test_decorator_pathname_and_number() {
+        let conf = CmdOptConf {
+            flg_path_name: true,
+            flg_number: true,
+            ..Default::default()
+        };
+
+        let mut decorator = TextDecorator::new(&conf, "dir/test.txt", 10);
+        assert_eq!(decorator.next_prefix(), "\"dir/test.txt\"     1");
+    }
+
+    #[test]
+    fn test_decorator_only_filename() {
+        let conf = CmdOptConf {
+            flg_file_name: true,
+            ..Default::default()
+        };
+
+        let mut decorator = TextDecorator::new(&conf, "dir/test.txt", 0);
+        assert_eq!(decorator.next_prefix(), "\"test.txt\"");
+    }
+
+    #[test]
+    fn test_decorator_continuous_numbering() {
+        let conf = CmdOptConf {
+            flg_number: true,
+            ..Default::default()
+        };
+
+        let mut dec1 = TextDecorator::new(&conf, "f1.txt", 0);
+        dec1.next_prefix();
+        let last_num = dec1.all_line_num;
+
+        let mut dec2 = TextDecorator::new(&conf, "f2.txt", last_num);
+        assert_eq!(dec2.next_prefix(), "     2");
+    }
+}
