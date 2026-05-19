@@ -362,7 +362,7 @@ mod test_2_file_e {
         let mut expected_output = String::new();
         for i in 1..=200 {
             let line = if i % 2 == 1 { "abcdefg" } else { "hijklmn" };
-            expected_output.push_str(&format!("{:>6}\t{}\n", i, line));
+            expected_output.push_str(&format!("{i:>6}\t{line}\n"));
         }
         assert_eq!(oup.stdout, expected_output);
         assert!(oup.status.success());

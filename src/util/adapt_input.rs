@@ -73,7 +73,7 @@ where
         #[cfg(feature = "bzip2")]
         FileType::Bzip2 => Box::new(BufReader::new(BzDecoder::new(file))),
         FileType::Plain => Box::new(BufReader::new(file)),
-        _ => return Err(anyhow!("Not support file type: {:?}", file_type)),
+        _ => return Err(anyhow!("Not support file type: {file_type:?}")),
     };
 
     f(sioe, Some(reader), path_s, line_num)

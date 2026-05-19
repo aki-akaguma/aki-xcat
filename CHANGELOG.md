@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * refactor decoration logic in `src/run.rs` by introducing `TextDecorator` struct to improve maintainability
 
 ### Fixed
+* `clippy::uninlined-format-args`
 * `clippy::needless_borrow`
 
 ### Removed
