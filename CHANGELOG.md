@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * update crate: runnel(0.4.2)
 * refactor file type detection logic with named constants and improved documentation
 * simplify file type detection logic by using `read()` instead of `read_exact()` to avoid explicit `UnexpectedEof` handling
+* refactor decoration logic in `src/run.rs` by introducing `TextDecorator` struct to improve maintainability
 
 ### Fixed
 * `clippy::needless_borrow`

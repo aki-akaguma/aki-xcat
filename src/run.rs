@@ -85,7 +85,6 @@ fn process_text_simple_byte_in(
     sioe: &RunnelIoe,
     reader: Option<Box<dyn BufRead>>,
 ) -> anyhow::Result<()> {
-    //let is_string_pipe_out = sioe.pg_out().is_line_pipe();
     let mut reader = match reader {
         Some(rd) => rd,
         None => sioe.pg_in().lock_bufread(),
@@ -107,23 +106,7 @@ fn process_text_simple_byte_in(
             &buf[..]
         };
         let line_ss = String::from_utf8_lossy(buf_s);
-        //
         sioe.pg_out().write_line(line_ss.to_string())?;
-        /*
-        if is_string_pipe_out {
-            sioe.pg_out().write_line(line_ss.to_string())?;
-        } else {
-            #[cfg(not(windows))]
-            sioe.pg_out()
-                .lock()
-                .write_fmt(format_args!("{line_ss}\n"))?;
-            //
-            #[cfg(windows)]
-            sioe.pg_out()
-                .lock()
-                .write_fmt(format_args!("{line_ss}\r\n"))?;
-        }
-            */
     }
     Ok(())
 }
@@ -140,42 +123,14 @@ fn process_text_decorated(
         Some(rd) => rd,
         None => sioe.pg_in().lock_bufread(),
     };
-    let mut all_line_num = line_num;
-    let mut curr_line_num: usize = 0;
-    let file_nm = if conf.flg_file_name {
-        Path::new(path_s)
-            .file_name()
-            .map(|s| s.to_string_lossy().to_string())
-            .unwrap_or_default()
-    } else {
-        "".to_string()
-    };
+
+    let mut decorator = TextDecorator::new(conf, path_s, line_num);
+
     for line in reader.lines() {
         let line_s = line?;
         let line_ss = line_s.as_str();
-        //
-        let fmt_left = if conf.flg_path_name {
-            let prefix = format!("\"{path_s}\"");
-            if conf.flg_number {
-                curr_line_num += 1;
-                format!("{prefix}{curr_line_num:>6}")
-            } else {
-                prefix
-            }
-        } else if conf.flg_file_name {
-            let prefix = format!("\"{file_nm}\"");
-            if conf.flg_number {
-                curr_line_num += 1;
-                format!("{prefix}{curr_line_num:>6}")
-            } else {
-                prefix
-            }
-        } else if conf.flg_number {
-            all_line_num += 1;
-            format!("{all_line_num:>6}")
-        } else {
-            String::new()
-        };
+        let fmt_left = decorator.next_prefix();
+
         if is_string_pipe_out {
             sioe.pg_out().write_line(format!("{fmt_left}\t{line_ss}"))?;
         } else {
@@ -184,5 +139,58 @@ fn process_text_decorated(
                 .write_fmt(format_args!("{fmt_left}\t{line_ss}\n"))?;
         }
     }
-    Ok(all_line_num)
+    Ok(decorator.all_line_num)
+}
+
+struct TextDecorator<'a> {
+    conf: &'a CmdOptConf,
+    path_s: &'a str,
+    file_nm: String,
+    pub all_line_num: usize,
+    curr_line_num: usize,
+}
+
+impl<'a> TextDecorator<'a> {
+    fn new(conf: &'a CmdOptConf, path_s: &'a str, all_line_num: usize) -> Self {
+        let file_nm = if conf.flg_file_name {
+            Path::new(path_s)
+                .file_name()
+                .map(|s| s.to_string_lossy().to_string())
+                .unwrap_or_default()
+        } else {
+            String::new()
+        };
+        Self {
+            conf,
+            path_s,
+            file_nm,
+            all_line_num,
+            curr_line_num: 0,
+        }
+    }
+
+    fn next_prefix(&mut self) -> String {
+        if self.conf.flg_path_name {
+            let prefix = format!("\"{}\"", self.path_s);
+            if self.conf.flg_number {
+                self.curr_line_num += 1;
+                format!("{prefix}{:>6}", self.curr_line_num)
+            } else {
+                prefix
+            }
+        } else if self.conf.flg_file_name {
+            let prefix = format!("\"{}\"", self.file_nm);
+            if self.conf.flg_number {
+                self.curr_line_num += 1;
+                format!("{prefix}{:>6}", self.curr_line_num)
+            } else {
+                prefix
+            }
+        } else if self.conf.flg_number {
+            self.all_line_num += 1;
+            format!("{:>6}", self.all_line_num)
+        } else {
+            String::new()
+        }
+    }
 }

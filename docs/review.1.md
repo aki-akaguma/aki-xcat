@@ -38,7 +38,7 @@ The `aki-xcat` project is a well-structured Rust command-line utility for concat
 - **Broken Pipe Handling**: The specific test for broken pipes (`test_output_broken_pipe`) demonstrates a high level of production readiness.
 
 ## 5. Potential Improvements
-- **Performance Optimization**: For the `process_text_simple` case where no decorations are requested, the tool could potentially skip UTF-8 validation/conversion and use a faster byte-copying approach, similar to `process_binary`, while still respecting line endings if necessary.
+- **Performance Optimization**: For the `process_text_simple` case where no decorations are requested, the tool could potentially use a faster byte-copying approach, similar to `process_binary`. However, it is important to note that the current implementation's use of `String::from_utf8_lossy` provides critical safety and security by ensuring that invalid UTF-8 sequences are sanitized (replaced with U+FFFD). Any optimization that skips this validation must carefully consider the security implications of allowing raw, potentially malformed byte sequences in text mode.
 - **Code Refactoring**: In `src/run.rs`, the `process_text_decorated` function could be slightly refactored to separate the prefix generation from the output loop to improve readability as more formatting options are added.
 
 ## Conclusion
