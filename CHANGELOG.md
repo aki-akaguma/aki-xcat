@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 * re-organize code review reports into `docs/reviews/`
 
+### Fixed
+* bug in `detect_file_type` where small files were incorrectly identified as plain text
+
 
 ## [0.2.2] (2026-05-20)
 ### Added

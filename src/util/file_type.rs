@@ -29,24 +29,25 @@ const MAGIC_BZIP2: [u8; 3] = [0x42, 0x5a, 0x68];
 
 pub fn detect_file_type(file: &mut File) -> IoResult<FileType> {
     let mut magic_bytes = [0; 4];
-    let n = file.read(&mut magic_bytes)?;
+    // Read up to 4 bytes to check for signatures.
+    // If the file is smaller than 4 bytes, the remaining bytes remain 0,
+    // which safely ensures starts_with will only match if the magic number is fully contained.
+    let _ = file.read(&mut magic_bytes)?;
     file.seek(SeekFrom::Start(0))?; // Rewind after reading
 
-    Ok(if n < 4 {
-        FileType::Plain
-    } else if magic_bytes.starts_with(&MAGIC_GZIP) {
-        FileType::Gzip
+    if magic_bytes.starts_with(&MAGIC_GZIP) {
+        Ok(FileType::Gzip)
     } else if magic_bytes.starts_with(&MAGIC_XZ) {
-        FileType::Xz
+        Ok(FileType::Xz)
     } else if magic_bytes.starts_with(&MAGIC_ZSTD) {
-        FileType::Zstd
+        Ok(FileType::Zstd)
     } else if magic_bytes.starts_with(&MAGIC_LZ4) {
-        FileType::Lz4
+        Ok(FileType::Lz4)
     } else if magic_bytes.starts_with(&MAGIC_BZIP2) {
-        FileType::Bzip2
+        Ok(FileType::Bzip2)
     } else {
-        FileType::Plain
-    })
+        Ok(FileType::Plain)
+    }
 }
 /*
  * reference:
