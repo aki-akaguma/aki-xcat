@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+* code review report: `docs/reviews/2026-06-01_code_review.3.md`
+
+### Changed
+* re-organize code review reports into `docs/reviews/`
 
 
 ## [0.2.2] (2026-05-20)
