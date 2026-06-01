@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 * re-organize code review reports into `docs/reviews/`
+* use `std::path::Path::join` for cross-platform path handling
 
 ### Fixed
 * bug in `detect_file_type` where small files were incorrectly identified as plain text

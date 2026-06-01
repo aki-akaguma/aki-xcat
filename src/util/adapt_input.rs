@@ -19,6 +19,7 @@ use anyhow::Context;
 use runnel::RunnelIoe;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use std::path::Path;
 
 pub fn adapt_input<F>(
     sioe: &RunnelIoe,
@@ -40,7 +41,8 @@ where
                 line_num = if base_dir.is_empty() {
                     cat_process_file(sioe, path_s, line_num, &mut f)?
                 } else {
-                    let s = format!("{base_dir}/{path_s}");
+                    let path = Path::new(&base_dir).join(path_s);
+                    let s = path.to_string_lossy();
                     cat_process_file(sioe, &s, line_num, &mut f)?
                 };
             }
